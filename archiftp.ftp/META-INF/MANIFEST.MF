@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: com.ingres.archiftp.ftp;version="1.0.0"
+Private-Package: com.ingres.archiftp.ftp.internal
+Ignore-Package: com.ingres.archiftp.ftp.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: com.ingres.archiftp.ftp
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Bnd-LastModified: 1242270203127
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.ingres.archiftp.ftp.internal.FtpActivator
+Bundle-Description: Generated using Pax-Construct
+Import-Package: com.ingres.archiftp.ftp;version="1.0.0",org.osgi.frame
+ work
+Bundle-SymbolicName: com.ingres.archiftp.ftp
+

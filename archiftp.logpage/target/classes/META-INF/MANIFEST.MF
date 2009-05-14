@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Export-Package: com.ingres.archiftp.logpage;version="1.0.0"
+Private-Package: com.ingres.archiftp.logpage.internal
+Ignore-Package: com.ingres.archiftp.logpage.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: com.ingres.archiftp.logpage
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Bnd-LastModified: 1242290250226
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.ingres.archiftp.logpage.internal.LogpageActivato
+ r
+Bundle-Description: Generated using Pax-Construct
+Import-Package: com.ingres.archiftp.logpage;version="1.0.0",javax.serv
+ let;version="2.5",javax.servlet.http;version="2.5",org.osgi.framework
+ ,org.osgi.service.cm,org.osgi.service.http,org.osgi.service.log,org.o
+ sgi.util.tracker
+Bundle-SymbolicName: com.ingres.archiftp.logpage
+

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: com.ingres.archiftp.monitor;version="1.0.0"
+Private-Package: com.ingres.archiftp.monitor.internal
+Ignore-Package: com.ingres.archiftp.monitor.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: com.ingres.archiftp.monitor
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Bnd-LastModified: 1242270077661
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.ingres.archiftp.monitor.internal.MonitorActivator
+Bundle-Description: Generated using Pax-Construct
+Import-Package: com.ingres.archiftp.monitor;version="1.0.0",org.osgi.f
+ ramework
+Bundle-SymbolicName: com.ingres.archiftp.monitor
+
