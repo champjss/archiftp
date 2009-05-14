@@ -8,7 +8,7 @@ Bundle-Name: com.ingres.archiftp.ftp
 Created-By: Apache Maven Bundle Plugin
 Build-Jdk: 1.6.0_13
 Bundle-Version: 1.0.0
-Bnd-LastModified: 1242290252016
+Bnd-LastModified: 1242294413378
 Bundle-ManifestVersion: 2
 Bundle-Activator: com.ingres.archiftp.ftp.internal.FtpActivator
 Bundle-Description: Generated using Pax-Construct

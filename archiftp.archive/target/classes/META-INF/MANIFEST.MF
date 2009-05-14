@@ -8,7 +8,7 @@ Bundle-Name: com.ingres.archiftp.archive
 Created-By: Apache Maven Bundle Plugin
 Build-Jdk: 1.6.0_13
 Bundle-Version: 1.0.0
-Bnd-LastModified: 1242290251159
+Bnd-LastModified: 1242294412548
 Bundle-ManifestVersion: 2
 Bundle-Activator: com.ingres.archiftp.archive.internal.ArchiveActivato
  r

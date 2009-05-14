@@ -42,7 +42,7 @@ public class LogpageServlet extends HttpServlet {
 
 	private void renderLogs(HttpServletResponse rsp,
 			Enumeration<LogEntry> logEntrys) throws IOException {
-		renderHtml(rsp, "<h1>Archiftp Logpage</h1>\n");
+		renderHtml(rsp, "<h1>Archiftp Logpage</h1>");
 		while (logEntrys.hasMoreElements()) {
 			LogEntry entry = logEntrys.nextElement();
 			renderLog(rsp, entry);
@@ -71,7 +71,7 @@ public class LogpageServlet extends HttpServlet {
 		}
 		else {
 			renderHtml(rsp, String.format(
-					"<li><span style=\"%s\">[%s] [%s] [%s] %s</span></li>\n", 
+					"<li><span style=\"%s\">[%s] [%s] [%s] %s</span></li>", 
 					style, dateTime, level, referenceStr, entry.getMessage()));
 		}
 	}
@@ -155,7 +155,7 @@ public class LogpageServlet extends HttpServlet {
 	
 	public LogpageServlet(LogReaderServiceWrapper logReaderService) {
 		this.logReaderService = logReaderService;
-		this.dateFormat = new SimpleDateFormat("yyyy-MM-dd KK:mm:SSS");
+		this.dateFormat = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss:SSS");
 	}
 	
 }

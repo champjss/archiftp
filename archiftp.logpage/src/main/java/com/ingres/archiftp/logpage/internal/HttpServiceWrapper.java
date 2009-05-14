@@ -33,6 +33,11 @@ public class HttpServiceWrapper {
 				throw new RuntimeException(String.format("Cannot register servlet %s : "
 						+ "invalid argument.", alias), e);
 			}
+			catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(String.format("Cannot register servlet %s : "
+						+ "Unexpected error.", alias), e);
+			}
 		}
 		else {
 			throw new RuntimeException(String.format("Cannot register servlet %s : "

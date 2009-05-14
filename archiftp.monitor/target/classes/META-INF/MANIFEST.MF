@@ -8,7 +8,7 @@ Bundle-Name: com.ingres.archiftp.monitor
 Created-By: Apache Maven Bundle Plugin
 Build-Jdk: 1.6.0_13
 Bundle-Version: 1.0.0
-Bnd-LastModified: 1242290253125
+Bnd-LastModified: 1242294414428
 Bundle-ManifestVersion: 2
 Bundle-Activator: com.ingres.archiftp.monitor.internal.MonitorActivato
  r
