@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+	<OCD id="com.ingres.archiftp.archive" name="Archiftp (Archive)" description="Archive service of Archiftp">
+		<AD id="archive-path" type="String" requied="true" default="" name="Archive Path" description="Absolute path to archive directory."/>
+	</OCD>
+	<Designate pid="com.ingres.archiftp.archive">
+		<Object ocdref="com.ingres.archiftp.archive"/>
+	</Designate>
+</metatype:MetaData>
