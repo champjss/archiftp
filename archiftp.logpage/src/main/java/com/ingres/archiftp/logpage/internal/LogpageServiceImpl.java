@@ -24,7 +24,12 @@ public final class LogpageServiceImpl implements LogpageService {
 			if (this.servlet != null) {
 				unregisterLogpage();
 			}
-			registerLogpage();
+			try {
+				registerLogpage();
+			} catch (Throwable e) {
+				e.printStackTrace();
+				this.logService.error("Cannot start logpage servlet.", e);
+			}
 		}
 		else {
 			throw new RuntimeException("Cannot start logpage : "

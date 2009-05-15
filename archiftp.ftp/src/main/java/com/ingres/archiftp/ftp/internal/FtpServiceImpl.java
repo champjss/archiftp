@@ -14,20 +14,27 @@ public final class FtpServiceImpl implements FtpService {
 		String oldFilePath = file.getAbsolutePath();
 		
 		if (this.properties.isInitialized()) {
-			this.worker.uploadFile(file);
-			this.logService.debug(String.format("file %s uploaded to %s at directory %s.", 
-					oldFilePath, this.properties.getHostname(), this.properties.getDirectory()));
+			try {
+				this.worker.uploadFile(file);
+				this.logService.debug(String.format("File '%s' is uploaded.", oldFilePath));
+			} catch (Exception e) {
+				String message = String.format("Cannot upload file '%s' (an error occurs).", 
+						file.getAbsolutePath());
+				this.logService.error(message, e);
+				throw new RuntimeException(message, e);
+			}
 		}
 		else {
-			throw new RuntimeException("Cannot upload file %s : "
-					+ "Some configuration(s) maybe incorrect or missing.");
+			String message = String.format("Cannot upload file '%s' "
+					+ "(some configurations maybe incorrect or missing).", file.getAbsolutePath());
+			throw new RuntimeException(message);
 		}
 	}
 	
 	public FtpServiceImpl(FtpProperties properties, LogServiceWrapper logService) {
 		this.properties = properties;
 		this.logService = logService;
-		this.worker = new FtpWorker(properties);
+		this.worker = new FtpWorker(properties, logService);
 	}
 	
 }

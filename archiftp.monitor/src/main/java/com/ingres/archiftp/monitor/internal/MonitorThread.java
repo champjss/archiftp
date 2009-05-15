@@ -14,17 +14,14 @@ public class MonitorThread extends Thread {
 		long currentMonitorInterval;
 		
 		while(!this.isInterrupted()) {
-			this.logService.debug(String.format("Now monitor for %s", 
-					this.properties.getMonitorPath()));
 			currentMonitorDirectory = new File(this.properties.getMonitorPath());
 			currentMonitorInterval = this.properties.getMonitorInterval();
 			
 			try {
 				File[] monitoredFiles = currentMonitorDirectory.listFiles();
 				FtpAndArchivedFiles(monitoredFiles);
-			} catch (Throwable e) {
-				e.printStackTrace();
-				this.logService.error("Unfortunately error.", e);
+			} catch (Exception e) {
+				this.logService.error("Monitoring failed.", e);
 				this.logService.info("Monitoring will be stopped because some errors occur.");
 				return;
 			}
@@ -43,17 +40,23 @@ public class MonitorThread extends Thread {
 			for (File file : files) {
 				FtpAndArchivedFile(file);
 			}
-		} catch (Throwable e) {
-			throw new RuntimeException("Cannot upload file(s)", e);
+		} catch (Exception e) {
+			throw new RuntimeException("Working with files failed.", e);
 		}
 	}
 	
 	private void FtpAndArchivedFile(File file) {
 		try {
 			this.ftpService.uploadFile(file);
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Uploading file '%s' to archive failed.",
+					file.getAbsolutePath()), e);
+		}
+		
+		try {
 			this.archiveService.moveFileToArchive(file);
-		} catch (Throwable e) {
-			throw new RuntimeException(String.format("Cannot upload file %s : ",
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Moving file '%s' to archive failed.",
 					file.getAbsolutePath()), e);
 		}
 	}

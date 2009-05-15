@@ -9,9 +9,11 @@ import java.util.Date;
 public class ArchiveWorker {
 
 	private ArchiveProperties properties;
+	private LogServiceWrapper logService;
 
-	public ArchiveWorker(ArchiveProperties properties) {
+	public ArchiveWorker(ArchiveProperties properties, LogServiceWrapper logService) {
 		this.properties = properties;
+		this.logService = logService;
 	}
 
 	public void moveFileToArchive(File file) {
@@ -19,10 +21,11 @@ public class ArchiveWorker {
 			checkIsFileCanMove(file);
 			checkIsArchiveAvailable();
 			renameFile(file);
-		} catch (Throwable e) {
-			throw new RuntimeException(String.format(
-					"Cannot move file %s to archive path %s.", file.getAbsolutePath(), 
-					this.properties.getArchivePath()), e);
+		} catch (Exception e) {
+			String message = String.format(
+					"Cannot move file '%s' to archive.", file.getAbsolutePath(), 
+					this.properties.getArchivePath());
+			throw new RuntimeException(message, e);
 		}
 	}
 
@@ -45,7 +48,14 @@ public class ArchiveWorker {
 		
 		File targetPath = new File(targetPathAbsoluteStr);
 		if (!targetPath.exists()) {
-			targetPath.mkdir();
+			boolean mkdirResult = targetPath.mkdir();
+			if (!mkdirResult) {
+				String message = String.format(
+						"Create subdirectory '%s' failed.", targetPathAbsoluteStr);
+				logService.debug(message);
+				throw new RuntimeException(message);
+			}
+			logService.debug(String.format("Subdirectory '%s' is created.", targetPathAbsoluteStr));
 		}
 		
 		return targetPath.getAbsolutePath();
@@ -57,23 +67,29 @@ public class ArchiveWorker {
 
 	private void checkIsFileCanMove(File file) throws FileNotFoundException {
 		if (!file.exists()) {
-			throw new FileNotFoundException(String.format("File %s not found.",
-					file.getAbsolutePath()));
+			String message = String.format("File '%s' is not found.",
+					file.getAbsolutePath());
+			logService.debug(message);
+			throw new FileNotFoundException(message);
 		}
 
 		File parentDir = file.getParentFile();
 		if (!parentDir.canWrite()) {
-			throw new RuntimeException(String.format(
-					"Not have permission to write into directory %s", 
-					parentDir.getAbsolutePath()));
+			String message = String.format(
+					"Not have permission to write into directory '%s'.", 
+					parentDir.getAbsolutePath());
+			logService.debug(message);
+			throw new RuntimeException(message);
 		}
 	}
 
 	private void checkIsArchiveAvailable() throws FileNotFoundException {
 		File archive = new File(this.properties.getArchivePath());
 		if (!archive.exists()) {
-			throw new FileNotFoundException(String.format(
-					"Archive path %s not found.", archive.getAbsolutePath()));
+			String message = String.format(
+					"Archive path '%s' not found.", archive.getAbsolutePath());
+			logService.debug(message);
+			throw new FileNotFoundException(message);
 		}
 	}
 }

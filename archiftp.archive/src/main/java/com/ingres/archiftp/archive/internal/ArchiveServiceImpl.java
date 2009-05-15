@@ -15,22 +15,27 @@ public final class ArchiveServiceImpl implements ArchiveService {
 			try {
 				this.worker.moveFileToArchive(file);
 			} catch (RuntimeException e) {
-				throw new RuntimeException("Cannot move file %s to archive : An error occurs.", e);
+				String message = String.format("Cannot move file %s to archive (an error occurs).", 
+						file.getAbsolutePath());
+				throw new RuntimeException(message, e);
 			}
 		} else {
-			throw new RuntimeException("Cannot move file %s to archive : "
-					+ "Some configuration(s) maybe incorrect or missing.");
+			String message = String.format("Cannot move file %s to archive " +
+					"(some configurations maybe incorrect or missing).", 
+					file.getAbsolutePath());
+			throw new RuntimeException(message);
 		}
 		
-		this.logService.debug(String.format("file %s moved to archive %s", file.getAbsolutePath(), 
-				this.properties.getArchivePath()));
+		String message = String.format("File '%s' is moved to archive.", file.getAbsolutePath(), 
+				this.properties.getArchivePath());
+		this.logService.debug(message);
 	}
 
 	public ArchiveServiceImpl(ArchiveProperties properties,
 			LogServiceWrapper logService) {
 		this.properties = properties;
 		this.logService = logService;
-		this.worker = new ArchiveWorker(properties);
+		this.worker = new ArchiveWorker(properties, logService);
 	}
 
 }

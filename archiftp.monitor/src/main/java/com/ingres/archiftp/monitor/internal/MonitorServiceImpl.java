@@ -14,9 +14,13 @@ public final class MonitorServiceImpl implements MonitorService {
 	
 	public void startMonitor() {
 		if (!this.properties.isInitialized()) {
-			throw new RuntimeException("Cannot start monitoring : "
-				+ "Some configuration(s) maybe incorrect or missing.");
+			String message = "Cannot start monitoring "
+				+ "(some configurations maybe incorrect or missing).";
+			logService.error(message);
+			System.out.println(message);
+			return;
 		}
+		
 		if (!isMonitoring()) {
 			this.monitorThread = new MonitorThread(this.properties, this.logService, 
 					this.ftpService, this.archiveService);

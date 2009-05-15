@@ -53,26 +53,19 @@ public class LogpageServlet extends HttpServlet {
 		String style = getStyleOfLogLevel(entry);
 		String dateTime = getStringOfDateTime(entry);
 		String level = getStringOfLogLevel(entry);
-		
-		ServiceReference reference = entry.getServiceReference();
-		String referenceStr;
-		if (reference != null) {
-			referenceStr = reference.getClass().getName();
-		}
-		else {
-			referenceStr = "N/A";
-		}
+		String reference = getStringOfServiceReference(entry.getServiceReference());
+		String message = entry.getMessage();
 		
 		if (entry.getException() != null) {
-			String exception = entry.getException().getClass().getName();
+			String exception = entry.getException().toString();
 			renderHtml(rsp, String.format(
 					"<li><span style=\"%s\">[%s] [%s] [%s] %s (Exception: %s)</span></li>\n", 
-					style, dateTime, level, referenceStr, entry.getMessage(), exception));
+					style, dateTime, level, reference, message, exception));
 		}
 		else {
 			renderHtml(rsp, String.format(
 					"<li><span style=\"%s\">[%s] [%s] [%s] %s</span></li>", 
-					style, dateTime, level, referenceStr, entry.getMessage()));
+					style, dateTime, level, reference, message));
 		}
 	}
 
@@ -124,6 +117,15 @@ public class LogpageServlet extends HttpServlet {
 		}
 		
 		return result;
+	}
+	
+	private String getStringOfServiceReference(ServiceReference reference) {
+		String referenceStr = "N/A";
+		if (reference != null) {
+			referenceStr = reference.getBundle().getSymbolicName();
+		}
+		
+		return referenceStr;
 	}
 	
 	private void renderErrorReportPage(HttpServletResponse rsp, Exception e)

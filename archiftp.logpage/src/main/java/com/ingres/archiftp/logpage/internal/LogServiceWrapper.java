@@ -49,7 +49,7 @@ public class LogServiceWrapper {
 	private void log(int logLevel, String message) {
 		LogService service = getService();
 		if (service != null) {
-			service.log(referece, logLevel, message);
+			service.log(this.referece, logLevel, message);
 		}
 		else {
 			System.out.println(String.format("[%s] %s", 
@@ -60,7 +60,7 @@ public class LogServiceWrapper {
 	private void log(int logLevel, String message, Throwable e) {
 		LogService service = getService();
 		if (service != null) {
-			service.log(referece, logLevel, message, e);
+			service.log(this.referece, logLevel, message, e);
 		}
 		else {
 			System.out.println(String.format("[%s] %s (Exception: %s / Message: %s)", 
