@@ -9,13 +9,13 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>com.ingres.archiftp.monitor</bundle.symbolicName>
-    <bundle.namespace>com.ingres.archiftp.monitor</bundle.namespace>
+    <bundle.symbolicName>com.ingres.archiftp.logger</bundle.symbolicName>
+    <bundle.namespace>com.ingres.archiftp.logger</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ingres.archiftp</groupId>
-  <artifactId>archiftp.monitor</artifactId>
+  <artifactId>archiftp.logger</artifactId>
   <version>1.0.0</version>
 
   <name>${bundle.symbolicName}</name>
@@ -41,24 +41,6 @@
       <groupId>org.osgi</groupId>
       <artifactId>osgi_R4_compendium</artifactId>
       <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>com.ingres.archiftp</groupId>
-      <artifactId>archiftp.archive</artifactId>
-      <version>1.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.ingres.archiftp</groupId>
-      <artifactId>archiftp.ftp</artifactId>
-      <version>1.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.ingres.archiftp</groupId>
-      <artifactId>archiftp.logger</artifactId>
-      <version>1.0.0</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 

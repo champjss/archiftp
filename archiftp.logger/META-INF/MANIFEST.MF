@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: com.ingres.archiftp.logger;version="1.0.0"
+Private-Package: com.ingres.archiftp.logger.internal
+Ignore-Package: com.ingres.archiftp.logger.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: com.ingres.archiftp.logger
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Bnd-LastModified: 1242383823460
+Bundle-ManifestVersion: 2
+Bundle-Activator: com.ingres.archiftp.logger.internal.ExampleActivator
+Bundle-Description: Generated using Pax-Construct
+Import-Package: com.ingres.archiftp.logger;version="1.0.0",org.osgi.fr
+ amework
+Bundle-SymbolicName: com.ingres.archiftp.logger
+
