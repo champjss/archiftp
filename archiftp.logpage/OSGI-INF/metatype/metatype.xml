@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+    <OCD id="com.ingres.archiftp.logpage" name="Archiftp (Logpage)" description="Archiftp (Logpage)">
+    	<AD id="logpage-url" type="String" default="/archiftp/log" name="Servlet Alias" description="Servlet alias to show logpage. It should be start with /"/>
+    </OCD>
+    <Designate pid="com.ingres.archiftp.logpage">
+        <Object ocdref="com.ingres.archiftp.logpage"/>
+    </Designate>
+</metatype:MetaData>
