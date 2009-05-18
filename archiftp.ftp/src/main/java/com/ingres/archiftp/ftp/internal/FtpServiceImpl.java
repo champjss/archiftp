@@ -3,11 +3,12 @@ package com.ingres.archiftp.ftp.internal;
 import java.io.File;
 
 import com.ingres.archiftp.ftp.FtpService;
+import com.ingres.archiftp.logger.Logger;
 
 public final class FtpServiceImpl implements FtpService {
 
 	private FtpProperties properties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private FtpWorker worker;
 	
 	public void uploadFile(File file) {
@@ -16,11 +17,11 @@ public final class FtpServiceImpl implements FtpService {
 		if (this.properties.isInitialized()) {
 			try {
 				this.worker.uploadFile(file);
-				this.logService.debug(String.format("File '%s' is uploaded.", oldFilePath));
+				this.logger.debug(String.format("File '%s' is uploaded.", oldFilePath));
 			} catch (Exception e) {
 				String message = String.format("Cannot upload file '%s' (an error occurs).", 
 						file.getAbsolutePath());
-				this.logService.error(message, e);
+				this.logger.error(message, e);
 				throw new RuntimeException(message, e);
 			}
 		}
@@ -31,10 +32,10 @@ public final class FtpServiceImpl implements FtpService {
 		}
 	}
 	
-	public FtpServiceImpl(FtpProperties properties, LogServiceWrapper logService) {
+	public FtpServiceImpl(FtpProperties properties, Logger logger) {
 		this.properties = properties;
-		this.logService = logService;
-		this.worker = new FtpWorker(properties, logService);
+		this.logger = logger;
+		this.worker = new FtpWorker(properties, logger);
 	}
 	
 }

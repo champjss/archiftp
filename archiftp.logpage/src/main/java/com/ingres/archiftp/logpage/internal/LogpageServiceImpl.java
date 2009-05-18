@@ -1,20 +1,21 @@
 package com.ingres.archiftp.logpage.internal;
 
+import com.ingres.archiftp.logger.Logger;
 import com.ingres.archiftp.logpage.LogpageService;
 
 public final class LogpageServiceImpl implements LogpageService {
 	
 	private LogpageProperties properties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private HttpServiceWrapper httpService;
 	private LogReaderServiceWrapper logReaderService;
 	private LogpageServlet servlet;
 	private String aliasOfServlet;
 	
-	public LogpageServiceImpl(LogpageProperties properties, LogServiceWrapper logService, 
+	public LogpageServiceImpl(LogpageProperties properties, Logger logger, 
 			HttpServiceWrapper httpService, LogReaderServiceWrapper logReaderService) {
 		this.properties = properties;
-		this.logService = logService;
+		this.logger = logger;
 		this.httpService = httpService;
 		this.logReaderService = logReaderService;
 	}
@@ -28,7 +29,7 @@ public final class LogpageServiceImpl implements LogpageService {
 				registerLogpage();
 			} catch (Throwable e) {
 				e.printStackTrace();
-				this.logService.error("Cannot start logpage servlet.", e);
+				this.logger.error("Cannot start logpage servlet.", e);
 			}
 		}
 		else {

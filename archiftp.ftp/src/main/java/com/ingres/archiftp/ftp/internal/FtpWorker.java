@@ -6,10 +6,12 @@ import java.io.FileNotFoundException;
 
 import org.apache.commons.net.ftp.FTPClient;
 
+import com.ingres.archiftp.logger.Logger;
+
 public class FtpWorker {
 
 	private FtpProperties properties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private FTPClient ftp = new FTPClient();
 
 	public void uploadFile(File file) {
@@ -60,7 +62,7 @@ public class FtpWorker {
 			ftp.connect(hostname, port);
 		} catch (Exception e) {
 			String message = String.format("Connect to '%s:%d' failed.", hostname, port);
-			logService.debug(message, e);
+			this.logger.debug(message, e);
 			throw new RuntimeException(message, e);
 		}
 	}
@@ -70,7 +72,7 @@ public class FtpWorker {
 			ftp.pasv();
 		} catch (Exception e) {
 			String message = "Entering passive mode failed.";
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new RuntimeException(message, e);
 		}
 	}
@@ -83,7 +85,7 @@ public class FtpWorker {
 		} catch (Exception e) {
 			String message = String.format(
 					"Login with username '%s' failed.", username);
-			logService.debug(message, e);
+			this.logger.debug(message, e);
 			throw new RuntimeException(message, e);
 		}
 		
@@ -91,7 +93,7 @@ public class FtpWorker {
 			String message = String.format(
 					"Login with username '%s' failed " + 
 					"(username and password combination maybe wrong).", username);
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new RuntimeException(message);
 		}
 	}
@@ -100,7 +102,7 @@ public class FtpWorker {
 		try {
 			ftp.disconnect();
 		} catch (Exception e) {
-			logService.debug("Disconnecting failed.", e);
+			this.logger.debug("Disconnecting failed.", e);
 		}
 	}
 
@@ -112,7 +114,7 @@ public class FtpWorker {
 		} catch (Exception e) {
 			String message = String.format(
 					"Changing directory to '%s' failed.", directory);
-			logService.debug(message, e);
+			this.logger.debug(message, e);
 			throw new RuntimeException(message, e);
 		}
 
@@ -121,7 +123,7 @@ public class FtpWorker {
 					"Changing directory to '%s' failed (with return code %d). "
 					+ "The directory may not exits in the server.",
 						directory, cwdResultCode);
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new RuntimeException(message);
 		}
 	}
@@ -142,7 +144,7 @@ public class FtpWorker {
 			String message = String.format(
 					"Uploading file '%s' to directory '%s' failed.", file
 					.getAbsolutePath(), remotePath);
-			logService.debug(message, e);
+			this.logger.debug(message, e);
 			throw new RuntimeException(message, e);
 		}
 
@@ -150,7 +152,7 @@ public class FtpWorker {
 			String message = String.format(
 					"Uploading file '%s' to directory '%s' failed.", file
 					.getAbsolutePath(), remotePath);
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new RuntimeException(message);
 		}
 	}
@@ -164,7 +166,7 @@ public class FtpWorker {
 			String message = String.format(
 					"Getting FileInputStream of file '%s' failed.", file
 					.getAbsolutePath());
-			logService.debug(message, e);
+			this.logger.debug(message, e);
 			throw new RuntimeException(message, e);
 		}
 
@@ -184,13 +186,13 @@ public class FtpWorker {
 		if (!file.exists()) {
 			String message = String.format(
 					"File %s is not found.", file.getAbsolutePath());
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new FileNotFoundException(message);
 		}
 	}
 
-	public FtpWorker(FtpProperties properties, LogServiceWrapper logService) {
+	public FtpWorker(FtpProperties properties, Logger logger) {
 		this.properties = properties;
-		this.logService = logService;
+		this.logger = logger;
 	}
 }

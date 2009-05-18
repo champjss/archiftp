@@ -8,11 +8,13 @@ Bundle-Name: com.ingres.archiftp.monitor
 Created-By: Apache Maven Bundle Plugin
 Build-Jdk: 1.6.0_13
 Bundle-Version: 1.0.0
-Bnd-LastModified: 1242270077661
+Bnd-LastModified: 1242618949215
 Bundle-ManifestVersion: 2
-Bundle-Activator: com.ingres.archiftp.monitor.internal.MonitorActivator
+Bundle-Activator: com.ingres.archiftp.monitor.internal.MonitorActivato
+ r
 Bundle-Description: Generated using Pax-Construct
-Import-Package: com.ingres.archiftp.monitor;version="1.0.0",org.osgi.f
- ramework
+Import-Package: com.ingres.archiftp.archive,com.ingres.archiftp.ftp,co
+ m.ingres.archiftp.monitor;version="1.0.0",org.osgi.framework,org.osgi
+ .service.cm,org.osgi.service.log,org.osgi.util.tracker
 Bundle-SymbolicName: com.ingres.archiftp.monitor
 

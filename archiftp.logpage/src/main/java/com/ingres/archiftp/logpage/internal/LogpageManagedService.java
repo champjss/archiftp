@@ -5,10 +5,12 @@ import java.util.Dictionary;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
+import com.ingres.archiftp.logger.Logger;
+
 public class LogpageManagedService implements ManagedService {
 
 	private LogpageProperties managedProperties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private LogpageServiceImpl logpageService;
 	
 	@SuppressWarnings("unchecked")
@@ -27,13 +29,13 @@ public class LogpageManagedService implements ManagedService {
 			this.managedProperties.setAlias((String)property);		
 		}
 		else {
-			this.logService.warning("Configuration logpage-url is not set. " +
+			this.logger.warning("Configuration logpage-url is not set. " +
 					"If you not set it, This service cannot work properly.");
 		}
 	}
 	
 	private void logUpdated() {
-		this.logService.info(String.format(
+		this.logger.info(String.format(
 				"Configuration updated. logpage-url:%s",
 				this.managedProperties.getAlias()));
 	}
@@ -43,9 +45,9 @@ public class LogpageManagedService implements ManagedService {
 	}
 
 	public LogpageManagedService(LogpageProperties managedProperties, 
-			LogServiceWrapper logService, LogpageServiceImpl logpageService) {
+			Logger logger, LogpageServiceImpl logpageService) {
 		this.managedProperties = managedProperties;
-		this.logService = logService;
+		this.logger = logger;
 		this.logpageService = logpageService;
 	}
 	

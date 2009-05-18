@@ -2,10 +2,12 @@ package com.ingres.archiftp.monitor.internal;
 
 import java.io.File;
 
+import com.ingres.archiftp.logger.Logger;
+
 public class MonitorThread extends Thread {
 	
 	private MonitorProperties properties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private FtpServiceWrapper ftpService;
 	private ArchiveServiceWrapper archiveService;
 	
@@ -21,8 +23,8 @@ public class MonitorThread extends Thread {
 				File[] monitoredFiles = currentMonitorDirectory.listFiles();
 				FtpAndArchivedFiles(monitoredFiles);
 			} catch (Exception e) {
-				this.logService.error("Monitoring failed.", e);
-				this.logService.info("Monitoring will be stopped because some errors occur.");
+				this.logger.error("Monitoring failed.", e);
+				this.logger.info("Monitoring will be stopped because some errors occur.");
 				return;
 			}
 			
@@ -61,10 +63,10 @@ public class MonitorThread extends Thread {
 		}
 	}
 	
-	public MonitorThread(MonitorProperties properties, LogServiceWrapper logService, 
+	public MonitorThread(MonitorProperties properties, Logger logger, 
 			FtpServiceWrapper ftpService, ArchiveServiceWrapper archiveService) {
 		this.properties = properties;
-		this.logService = logService;
+		this.logger = logger;
 		this.ftpService = ftpService;
 		this.archiveService = archiveService;
 	}

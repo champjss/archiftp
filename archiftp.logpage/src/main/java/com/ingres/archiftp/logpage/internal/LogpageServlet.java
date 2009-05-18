@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogEntry;
 import org.osgi.service.log.LogService;
@@ -120,12 +121,15 @@ public class LogpageServlet extends HttpServlet {
 	}
 	
 	private String getStringOfServiceReference(ServiceReference reference) {
-		String referenceStr = "N/A";
+		String referenceString = "N/A";
 		if (reference != null) {
-			referenceStr = reference.getBundle().getSymbolicName();
+			Bundle referenceBundle = reference.getBundle();
+			if (referenceBundle != null) {
+				referenceString = referenceBundle.getSymbolicName();
+			}
 		}
 		
-		return referenceStr;
+		return referenceString;
 	}
 	
 	private void renderErrorReportPage(HttpServletResponse rsp, Exception e)

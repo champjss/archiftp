@@ -9,42 +9,41 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
-import org.osgi.service.log.LogService;
-import org.osgi.util.tracker.ServiceTracker;
 
 import com.ingres.archiftp.archive.ArchiveService;
+import com.ingres.archiftp.logger.Logger;
 
 public final class ArchiveActivator implements BundleActivator {
-	
-	private ServiceTracker logServiceTracker;
+
 	private String pid = "com.ingres.archiftp.archive";
 	
 	public void start(BundleContext bc) throws Exception {
-		this.logServiceTracker = getServiceTracker(LogService.class, bc);
-		this.logServiceTracker.open();
+		// Create Logger
+		Logger loggerArchiveService = new Logger();
+		Logger loggerManagedService = new Logger();
 		
-		// Create LogServiceWrapper
-		ServiceReference archiveServiceReference = getServiceReference(ArchiveService.class, bc);
-		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
-		LogServiceWrapper logArchiveService = new LogServiceWrapper(
-				archiveServiceReference, this.logServiceTracker);
-		LogServiceWrapper logManagedService = new LogServiceWrapper(
-				managedServiceReference, this.logServiceTracker);
-		
+		// Create Properties
 		ArchiveProperties properties = new ArchiveProperties();
 		
 		// Create services
-		ArchiveService archiveService = new ArchiveServiceImpl(properties, logArchiveService);
+		ArchiveService archiveService = new ArchiveServiceImpl(properties, loggerArchiveService);
 		ManagedService logpageManagedService = new ArchiveManagedService(
-				properties, logManagedService);
+				properties, loggerManagedService);
 		
 		// Register services
 		registerManagedService((ArchiveManagedService)logpageManagedService, bc);
 		registerArchiveService(archiveService, bc);
+		
+		// Create ServiceReference
+		ServiceReference archiveServiceReference = getServiceReference(ArchiveService.class, bc);
+		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
+		
+		// Set ServiceReference to Logger
+		loggerArchiveService.setReference(archiveServiceReference);
+		loggerManagedService.setReference(managedServiceReference);
 	}
 
 	public void stop(BundleContext bc) throws Exception {
-		this.logServiceTracker.close();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -76,11 +75,6 @@ public final class ArchiveActivator implements BundleActivator {
         }
 
 		return properties;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private ServiceTracker getServiceTracker(Class service, BundleContext bc) {
-		return new ServiceTracker(bc, service.getName(), null);
 	}
 	
 	@SuppressWarnings("unchecked")

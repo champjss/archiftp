@@ -54,6 +54,12 @@
       <version>1.0.0</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.ingres.archiftp</groupId>
+      <artifactId>archiftp.logger</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>

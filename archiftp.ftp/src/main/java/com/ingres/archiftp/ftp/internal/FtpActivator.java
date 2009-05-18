@@ -9,42 +9,44 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.log.LogEntry;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ingres.archiftp.ftp.FtpService;
+import com.ingres.archiftp.logger.Logger;
 
 public final class FtpActivator implements BundleActivator {
 
-	private ServiceTracker logServiceTracker;
 	private String pid = "com.ingres.archiftp.ftp";
 	
 	public void start(BundleContext bc) throws Exception {
-		this.logServiceTracker = getServiceTracker(LogService.class, bc);
-		this.logServiceTracker.open();
+		// Create Logger
+		Logger loggerFtpService = new Logger();
+		Logger loggerManagedService = new Logger();
 		
-		// Create LogServiceWrapper
-		ServiceReference ftpServiceReference = getServiceReference(FtpService.class, bc);
-		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
-		LogServiceWrapper logFtpService = new LogServiceWrapper(
-				ftpServiceReference, this.logServiceTracker);
-		LogServiceWrapper logManagedService = new LogServiceWrapper(
-				managedServiceReference, this.logServiceTracker);
-		
+		// Create Properties
 		FtpProperties properties = new FtpProperties();
 		
 		// Create services
-		FtpService ftpService = new FtpServiceImpl(properties, logFtpService);
+		FtpService ftpService = new FtpServiceImpl(properties, loggerFtpService);
 		ManagedService logpageManagedService = new FtpManagedService(
-				properties, logManagedService);
+				properties, loggerManagedService);
 		
 		// Register services
 		registerManagedService((FtpManagedService)logpageManagedService, bc);
 		registerFtpService(ftpService, bc);
+		
+		// Create ServiceReference
+		ServiceReference ftpServiceReference = getServiceReference(FtpService.class, bc);
+		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
+		
+		// Set ServiceReference to Logger
+		loggerFtpService.setReference(ftpServiceReference);
+		loggerManagedService.setReference(managedServiceReference);
 	}
 
 	public void stop(BundleContext bc) throws Exception {
-		this.logServiceTracker.close();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -76,11 +78,6 @@ public final class FtpActivator implements BundleActivator {
         }
 
 		return properties;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private ServiceTracker getServiceTracker(Class service, BundleContext bc) {
-		return new ServiceTracker(bc, service.getName(), null);
 	}
 	
 	@SuppressWarnings("unchecked")

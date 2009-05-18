@@ -3,11 +3,12 @@ package com.ingres.archiftp.archive.internal;
 import java.io.File;
 
 import com.ingres.archiftp.archive.ArchiveService;
+import com.ingres.archiftp.logger.Logger;
 
 public final class ArchiveServiceImpl implements ArchiveService {
 
 	private ArchiveProperties properties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private ArchiveWorker worker;
 
 	public void moveFileToArchive(File file) {
@@ -28,14 +29,14 @@ public final class ArchiveServiceImpl implements ArchiveService {
 		
 		String message = String.format("File '%s' is moved to archive.", file.getAbsolutePath(), 
 				this.properties.getArchivePath());
-		this.logService.debug(message);
+		this.logger.debug(message);
 	}
 
 	public ArchiveServiceImpl(ArchiveProperties properties,
-			LogServiceWrapper logService) {
+			Logger logger) {
 		this.properties = properties;
-		this.logService = logService;
-		this.worker = new ArchiveWorker(properties, logService);
+		this.logger = logger;
+		this.worker = new ArchiveWorker(properties, logger);
 	}
 
 }

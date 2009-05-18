@@ -10,53 +10,56 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
-import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ingres.archiftp.archive.ArchiveService;
 import com.ingres.archiftp.ftp.FtpService;
+import com.ingres.archiftp.logger.Logger;
 import com.ingres.archiftp.monitor.MonitorService;
 
 public final class MonitorActivator implements BundleActivator {
 
 	private MonitorService monitorService;
 	private ServiceRegistration registration;
-	private ServiceTracker logServiceTracker;
 	private ServiceTracker archiveServiceTracker;
 	private ServiceTracker ftpServiceTracker;
 	private String pid = "com.ingres.archiftp.monitor";
 	
 	public void start(BundleContext bc) throws Exception {
-		this.logServiceTracker = getServiceTracker(LogService.class, bc);
-		this.logServiceTracker.open();
+		// Create Logger
+		Logger loggerMonitorService = new Logger();
+		Logger loggerManagedService = new Logger();
+		
+		// Create ServiceTracker
 		this.archiveServiceTracker = getServiceTracker(ArchiveService.class, bc);
 		this.archiveServiceTracker.open();
 		this.ftpServiceTracker = getServiceTracker(FtpService.class, bc);
 		this.ftpServiceTracker.open();
 		
-		// Create LogServiceWrapper
-		ServiceReference monitorServiceReference = getServiceReference(MonitorService.class, bc);
-		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
-		LogServiceWrapper logMonitorService = new LogServiceWrapper(
-				monitorServiceReference, this.logServiceTracker);
-		LogServiceWrapper logManagedService = new LogServiceWrapper(
-				managedServiceReference, this.logServiceTracker);
-		
-		// Create other ServiceWrapper
+		// Create ServiceWrapper
 		ArchiveServiceWrapper archiveService = new ArchiveServiceWrapper(this.archiveServiceTracker);
 		FtpServiceWrapper ftpService = new FtpServiceWrapper(this.ftpServiceTracker);
 		
+		// Create Properties
 		MonitorProperties properties = new MonitorProperties();
 		
 		// Create services
-		this.monitorService = new MonitorServiceImpl(properties, logMonitorService, 
+		this.monitorService = new MonitorServiceImpl(properties, loggerMonitorService, 
 				ftpService, archiveService);
 		ManagedService monitorManagedService = new MonitorManagedService(
-				properties, logManagedService, monitorService);
+				properties, loggerManagedService, monitorService);
 		
 		// Register services
 		registerManagedService((MonitorManagedService)monitorManagedService, bc);
 		registerMonitorService(monitorService, bc);
+		
+		// Create ServiceReference
+		ServiceReference monitorServiceReference = getServiceReference(MonitorService.class, bc);
+		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
+		
+		// Set ServiceReference to LogService
+		loggerMonitorService.setReference(monitorServiceReference);
+		loggerManagedService.setReference(managedServiceReference);
 	}
 
 	public void stop(BundleContext bc) throws Exception {
@@ -67,7 +70,6 @@ public final class MonitorActivator implements BundleActivator {
 		
 		this.ftpServiceTracker.close();
 		this.archiveServiceTracker.close();
-		this.logServiceTracker.close();
 	}
 	
 	@SuppressWarnings("unchecked")

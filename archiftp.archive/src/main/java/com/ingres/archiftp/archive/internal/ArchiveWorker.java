@@ -6,14 +6,16 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.ingres.archiftp.logger.Logger;
+
 public class ArchiveWorker {
 
 	private ArchiveProperties properties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 
-	public ArchiveWorker(ArchiveProperties properties, LogServiceWrapper logService) {
+	public ArchiveWorker(ArchiveProperties properties, Logger logger) {
 		this.properties = properties;
-		this.logService = logService;
+		this.logger = logger;
 	}
 
 	public void moveFileToArchive(File file) {
@@ -52,10 +54,10 @@ public class ArchiveWorker {
 			if (!mkdirResult) {
 				String message = String.format(
 						"Create subdirectory '%s' failed.", targetPathAbsoluteStr);
-				logService.debug(message);
+				this.logger.debug(message);
 				throw new RuntimeException(message);
 			}
-			logService.debug(String.format("Subdirectory '%s' is created.", targetPathAbsoluteStr));
+			this.logger.debug(String.format("Subdirectory '%s' is created.", targetPathAbsoluteStr));
 		}
 		
 		return targetPath.getAbsolutePath();
@@ -69,7 +71,7 @@ public class ArchiveWorker {
 		if (!file.exists()) {
 			String message = String.format("File '%s' is not found.",
 					file.getAbsolutePath());
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new FileNotFoundException(message);
 		}
 
@@ -78,7 +80,7 @@ public class ArchiveWorker {
 			String message = String.format(
 					"Not have permission to write into directory '%s'.", 
 					parentDir.getAbsolutePath());
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new RuntimeException(message);
 		}
 	}
@@ -88,7 +90,7 @@ public class ArchiveWorker {
 		if (!archive.exists()) {
 			String message = String.format(
 					"Archive path '%s' not found.", archive.getAbsolutePath());
-			logService.debug(message);
+			this.logger.debug(message);
 			throw new FileNotFoundException(message);
 		}
 	}

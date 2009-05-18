@@ -7,14 +7,14 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Logger {
 	
 	static private ServiceTracker tracker;
-	private ServiceReference referece;
+	private ServiceReference reference;
 	
 	public Logger() {
 		// Nothing to do :)
 	}
 	
 	public Logger(ServiceReference reference) {
-		this.referece = reference;
+		this.reference = reference;
 	}
 	
 	public void error(String message) {
@@ -52,27 +52,27 @@ public class Logger {
 	private void log(int logLevel, String message) {
 		LogService service = getService();
 		if (service != null) {
-			service.log(referece, logLevel, message);
+			service.log(reference, logLevel, message);
 		}
 		else {
-			System.out.println(String.format("[%s] %s", 
-					getStringOfLogLevel(logLevel), message));
+			System.out.println(String.format("[%s] [%s] %s", 
+					getStringOfLogLevel(logLevel), this.reference, message));
 		}
 	}
 	
 	private void log(int logLevel, String message, Throwable e) {
 		LogService service = getService();
 		if (service != null) {
-			service.log(referece, logLevel, message, e);
+			service.log(this.reference, logLevel, message, e);
 		}
 		else {
-			System.out.println(String.format("[%s] %s (Exception: %s / Message: %s)", 
-					getStringOfLogLevel(logLevel), message, e.getClass().getName(), e.getMessage()));
+			System.out.println(String.format("[%s] [%s] %s (Exception message: %s)", 
+					getStringOfLogLevel(logLevel), this.reference, message, e.getMessage()));
 		}
 	}
 	
 	private String getStringOfLogLevel(int logLevel) {
-		String result;
+		String result = "";
 		switch (logLevel){
 			case LogService.LOG_ERROR:
 				result = "ERROR";
@@ -85,9 +85,6 @@ public class Logger {
 				break;
 			case LogService.LOG_DEBUG:
 				result = "DEBUG";
-				break;
-			default:
-				result = "N/A";
 				break;
 		}
 		
@@ -102,12 +99,12 @@ public class Logger {
 		return (LogService)Logger.tracker.getService();
 	}
 
-	public ServiceReference getReferece() {
-		return referece;
+	public ServiceReference getReference() {
+		return reference;
 	}
 
-	public void setReferece(ServiceReference referece) {
-		this.referece = referece;
+	public void setReference(ServiceReference reference) {
+		this.reference = reference;
 	}
 
 	static public void setTracker(ServiceTracker tracker) {

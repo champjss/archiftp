@@ -5,10 +5,12 @@ import java.util.Dictionary;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
+import com.ingres.archiftp.logger.Logger;
+
 public class FtpManagedService implements ManagedService {
 
 	private FtpProperties managedProperties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 
 	@SuppressWarnings("unchecked")
 	public void updated(Dictionary properties) throws ConfigurationException {
@@ -33,7 +35,7 @@ public class FtpManagedService implements ManagedService {
 		if (property != null) {
 			this.managedProperties.setHostname((String) property);
 		} else {
-			this.logService.warning("Configuration hostname is not set. "
+			this.logger.warning("Configuration hostname is not set. "
 					+ "If you not set it, This service cannot work properly.");
 		}
 	}
@@ -54,7 +56,7 @@ public class FtpManagedService implements ManagedService {
 				"It must be an integer between 1-65535.", e);
 			}
 		} else {
-			this.logService.warning("Configuration hostname is not set. "
+			this.logger.warning("Configuration hostname is not set. "
 					+ "Using default value: 21");
 		}
 	}
@@ -65,7 +67,7 @@ public class FtpManagedService implements ManagedService {
 		if (property != null) {
 			this.managedProperties.setUsername((String) property);
 		} else {
-			this.logService.warning("Configuration hostname is not set. "
+			this.logger.warning("Configuration hostname is not set. "
 					+ "Using default value: 'anonymous'");
 		}
 	}
@@ -76,7 +78,7 @@ public class FtpManagedService implements ManagedService {
 		if (property != null) {
 			this.managedProperties.setPassword((String) property);
 		} else {
-			this.logService.warning("Configuration hostname is not set. "
+			this.logger.warning("Configuration hostname is not set. "
 					+ "Using default value: ''");
 		}
 	}
@@ -87,26 +89,24 @@ public class FtpManagedService implements ManagedService {
 		if (property != null) {
 			this.managedProperties.setDirectory((String) property);
 		} else {
-			this.logService.warning("Configuration hostname is not set. "
+			this.logger.warning("Configuration hostname is not set. "
 					+ "Using default value: '/'");
 		}
 	}
 
 	private void logUpdated() {
-		this.logService
-				.info(String.format(
-						"Configuration updated. hostname:%s, port:%d, username:%s, " + 
-						"password:******, directory:%s",
-						this.managedProperties.getHostname(),
-						this.managedProperties.getPort(),
-						this.managedProperties.getUsername(),
-						this.managedProperties.getDirectory()));
+		this.logger.info(String.format(
+				"Configuration updated. hostname:%s, port:%d, username:%s, " + 
+				"password:******, directory:%s",
+				this.managedProperties.getHostname(),
+				this.managedProperties.getPort(),
+				this.managedProperties.getUsername(),
+				this.managedProperties.getDirectory()));
 	}
 
-	public FtpManagedService(FtpProperties managedProperties,
-			LogServiceWrapper logService) {
+	public FtpManagedService(FtpProperties managedProperties, Logger logger) {
 		this.managedProperties = managedProperties;
-		this.logService = logService;
+		this.logger = logger;
 	}
 
 }

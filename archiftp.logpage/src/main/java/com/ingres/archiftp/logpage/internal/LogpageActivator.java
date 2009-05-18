@@ -14,30 +14,25 @@ import org.osgi.service.log.LogReaderService;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.ingres.archiftp.logger.Logger;
 import com.ingres.archiftp.logpage.LogpageService;
 
 public final class LogpageActivator implements BundleActivator {
 	
-	private ServiceTracker logServiceTracker;
 	private ServiceTracker httpServiceTracker;
 	private ServiceTracker logReaderServiceTracker;
 	private String pid = "com.ingres.archiftp.logpage";
 	
 	public void start(BundleContext bc) throws Exception {
-		this.logServiceTracker = getServiceTracker(LogService.class, bc);
-		this.logServiceTracker.open();
+		// Create Logger
+		Logger loggerLogpageService = new Logger();
+		Logger loggerManagedService = new Logger();
+		
+		// Create ServiceTracker
 		this.httpServiceTracker = getServiceTracker(HttpService.class, bc);
 		this.httpServiceTracker.open();
 		this.logReaderServiceTracker = getServiceTracker(LogReaderService.class, bc);
 		this.logReaderServiceTracker.open();
-		
-		// Create LogServiceWrapper
-		ServiceReference logpageServiceReference = getServiceReference(LogpageService.class, bc);
-		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
-		LogServiceWrapper logLogpageService = new LogServiceWrapper(
-				logpageServiceReference, this.logServiceTracker);
-		LogServiceWrapper logManagedService = new LogServiceWrapper(
-				managedServiceReference, this.logServiceTracker);
 		
 		// Create other ServiceWrapper
 		HttpServiceWrapper httpService = new HttpServiceWrapper(this.httpServiceTracker);
@@ -47,20 +42,27 @@ public final class LogpageActivator implements BundleActivator {
 		LogpageProperties properties = new LogpageProperties();
 		
 		// Create services
-		LogpageService logpageService = new LogpageServiceImpl(properties, logLogpageService, 
+		LogpageService logpageService = new LogpageServiceImpl(properties, loggerLogpageService, 
 				httpService, logReaderService);
 		ManagedService logpageManagedService = new LogpageManagedService(
-				properties, logManagedService, (LogpageServiceImpl)logpageService);
+				properties, loggerManagedService, (LogpageServiceImpl)logpageService);
 		
 		// Register services
 		registerManagedService((LogpageManagedService)logpageManagedService, bc);
 		registerLogpageService(logpageService, bc);
+		
+		// Create ServiceReference
+		ServiceReference logpageServiceReference = getServiceReference(LogpageService.class, bc);
+		ServiceReference managedServiceReference = getServiceReference(ManagedService.class, bc);
+		
+		// Set ServiceReference to Logger
+		loggerLogpageService.setReference(logpageServiceReference);
+		loggerManagedService.setReference(managedServiceReference);
 	}
 
 	public void stop(BundleContext bc) throws Exception {
 		this.httpServiceTracker.close();
 		this.logReaderServiceTracker.close();
-		this.logServiceTracker.close();
 	}
 	
 	@SuppressWarnings("unchecked")

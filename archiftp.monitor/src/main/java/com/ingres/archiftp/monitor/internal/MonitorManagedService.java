@@ -5,12 +5,13 @@ import java.util.Dictionary;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
+import com.ingres.archiftp.logger.Logger;
 import com.ingres.archiftp.monitor.MonitorService;
 
 public class MonitorManagedService implements ManagedService {
 
 	private MonitorProperties managedProperties;
-	private LogServiceWrapper logService;
+	private Logger logger;
 	private MonitorService monitorService;
 	
 	@SuppressWarnings("unchecked")
@@ -35,7 +36,7 @@ public class MonitorManagedService implements ManagedService {
 			this.managedProperties.setMonitorPath((String)property);
 		}
 		else {
-			this.logService.warning("Configuration monitor-path is not set. " +
+			this.logger.warning("Configuration monitor-path is not set. " +
 					"If you not set it, This service cannot work properly.");
 		}
 	}
@@ -58,13 +59,13 @@ public class MonitorManagedService implements ManagedService {
 			}
 		}
 		else {
-			this.logService.warning("Configuration hostname is not set. "
+			this.logger.warning("Configuration hostname is not set. "
 					+ "Using default value: 21");
 		}
 	}
 	
 	private void logUpdated() {
-		this.logService.info(String.format(
+		this.logger.info(String.format(
 				"Configuration updated. monitor-path:%s, monitor-interval:%d",
 				this.managedProperties.getMonitorPath(), this.managedProperties.getMonitorInterval()));
 	}
@@ -75,10 +76,10 @@ public class MonitorManagedService implements ManagedService {
 		}
 	}
 	
-	public MonitorManagedService(MonitorProperties managedProperties, LogServiceWrapper logService, 
+	public MonitorManagedService(MonitorProperties managedProperties, Logger logger, 
 			MonitorService monitorService) {
 		this.managedProperties = managedProperties;
-		this.logService = logService;
+		this.logger = logger;
 		this.monitorService = monitorService;
 	}
 

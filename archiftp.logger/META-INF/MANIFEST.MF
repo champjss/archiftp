@@ -10,7 +10,7 @@ Build-Jdk: 1.6.0_13
 Bundle-Version: 1.0.0
 Bnd-LastModified: 1242383823460
 Bundle-ManifestVersion: 2
-Bundle-Activator: com.ingres.archiftp.logger.internal.ExampleActivator
+Bundle-Activator: com.ingres.archiftp.logger.internal.LoggerActivator
 Bundle-Description: Generated using Pax-Construct
 Import-Package: com.ingres.archiftp.logger;version="1.0.0",org.osgi.fr
  amework
