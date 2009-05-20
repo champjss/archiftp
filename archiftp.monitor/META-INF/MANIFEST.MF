@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Export-Package: org.microx.archiftp.monitor;version="2.0.0"
+Private-Package: org.microx.archiftp.monitor.internal
+Ignore-Package: org.microx.archiftp.monitor.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: org.microx.archiftp.monitor
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1242802084625
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.microx.archiftp.monitor.internal.MonitorActivato
+ r
+Bundle-Description: Generated using Pax-Construct
+Import-Package: org.microx.archiftp.monitor;version="2.0.0",org.osgi.f
+ ramework,org.osgi.service.cm,org.osgi.service.log,org.osgi.util.track
+ er
+Bundle-SymbolicName: org.microx.archiftp.monitor
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
+	<OCD id="org.microx.archiftp.monitor" name="Archiftp (Monitor)" description="Monitor service of Archiftp">
+		<AD id="monitor-path" type="String" required="true" default="" name="Monitor Path" description="Absolute path of the directory that you want to monitor."/>
+		<AD id="monitor-interval" type="Long" required="true" default="10000" name="Monitor Interval Time" description="Time to check the monitor path (milliseconds)."/>
+	</OCD>
+	<Designate pid="org.microx.archiftp.monitor">
+		<Object ocdref="org.microx.archiftp.monitor"/>
+	</Designate>
+</metatype:MetaData>

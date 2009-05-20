@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: org.microx.archiftp.archive;version="2.0.0"
+Private-Package: org.microx.archiftp.archive.internal
+Ignore-Package: org.microx.archiftp.archive.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: org.microx.archiftp.archive
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1242717932438
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.microx.archiftp.archive.internal.ArchiveActivator
+Bundle-Description: Generated using Pax-Construct
+Import-Package: org.microx.archiftp.archive;version="2.0.0",org.osgi.f
+ ramework
+Bundle-SymbolicName: org.microx.archiftp.archive
+
