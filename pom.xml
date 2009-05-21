@@ -63,7 +63,7 @@
           <!--
            | some example Pax-Runner settings
           -->
-          <profiles>felix.metatype,felix.config,felix.webconsole</profiles>
+          <profiles>felix.prefs,felix.config,felix.webconsole</profiles>
           <provision>
             <param>--platform=felix</param>
           </provision>

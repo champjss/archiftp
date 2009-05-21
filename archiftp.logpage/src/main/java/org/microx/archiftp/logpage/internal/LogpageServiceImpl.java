@@ -147,7 +147,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			startAndSetPrintWriter(response);
 			render();
 		}
-		
+
 		private void resetVariables() {
 			this.isNextRowOdd = true;
 			this.logLevel = LogService.LOG_INFO;
@@ -229,10 +229,14 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 
 		private void appendDivMenu() {
 			appendToContent("<div id=\"menu\">");
-			appendToContent("<li class=\"first\"><a href=\".?level=error\">Error</a></li>");
-			appendToContent("<li><a href=\".?level=warning\">Warning</a></li>");
-			appendToContent("<li><a href=\".?level=info\">Info</a></li>");
-			appendToContent("<li><a href=\".?level=debug\">Debug</a></li>");
+			appendToContent(String.format("<li><a href=\"%s/?level=error\">Error</a></li>",
+					currentServletAlias));
+			appendToContent(String.format("<li><a href=\"%s/?level=warning\">Warning</a></li>",
+					currentServletAlias));
+			appendToContent(String.format("<li><a href=\"%s/?level=info\">Info</a></li>",
+					currentServletAlias));
+			appendToContent(String.format("<li><a href=\"%s/?level=debug\">Debug</a></li>",
+					currentServletAlias));
 			appendToContent("<ul>");
 			appendToContent("</ul>");
 			appendToContent("</div>");
