@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Export-Package: org.microx.archiftp.logpage;version="2.0.0"
+Private-Package: org.microx.archiftp.logpage.internal
+Ignore-Package: org.microx.archiftp.logpage.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: org.microx.archiftp.logpage
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 2.0.0
+Bnd-LastModified: 1242877764409
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.microx.archiftp.logpage.internal.LogpageActivato
+ r
+Bundle-Description: Generated using Pax-Construct
+Import-Package: org.microx.archiftp.logpage;version="2.0.0",org.osgi.f
+ ramework,org.osgi.service.cm
+Bundle-SymbolicName: org.microx.archiftp.logpage
+

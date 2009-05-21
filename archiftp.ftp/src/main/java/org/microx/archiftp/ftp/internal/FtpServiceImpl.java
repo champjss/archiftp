@@ -37,7 +37,7 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 			connect();
 		}
 		catch (SocketException e) {
-			throw new IOException("Unexpected exception when connecting to server.", e);
+			throw new IOException("socket timeout of FTPClient could not be set.", e);
 		}
 
 		enterPassiveMode();
