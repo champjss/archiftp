@@ -37,8 +37,8 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 	private String currentImageAlias;
 	private boolean firstRunPassed = false;
 
-	public LogpageServiceImpl(ServiceTracker logServiceTracker,
-			ServiceTracker httpServiceTracker, ServiceTracker logReaderServiceTracker) {
+	public LogpageServiceImpl(ServiceTracker logServiceTracker, ServiceTracker httpServiceTracker,
+			ServiceTracker logReaderServiceTracker) {
 		this.logServiceTracker = logServiceTracker;
 		this.httpServiceTracker = httpServiceTracker;
 		this.logReaderServiceTracker = logReaderServiceTracker;
@@ -48,8 +48,8 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		HttpService service;
 		int attemp = 3;
 		long delayToAttemp = 3000;
-		
-		while(true) {
+
+		while (true) {
 			service = getHttpService();
 			if (service != null) {
 				registerNewLogpageServlet(service);
@@ -73,7 +73,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			}
 		}
 	}
-	
+
 	private void registerNewLogpageServlet(HttpService service) {
 		if (service != null) {
 			this.servlet = new LogpageServlet();
@@ -84,7 +84,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 				service.registerResources(this.currentStyleAlias, "/style", null);
 				service.registerResources(this.currentImageAlias, "/images", null);
 				service.registerServlet(this.currentServletAlias, this.servlet, null, null);
-				logInfoReistered();	
+				logInfoReistered();
 			}
 			catch (NamespaceException e) {
 				logErrorDuplicatedAlias(e);
@@ -102,7 +102,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			return;
 		}
 	}
-	
+
 	public void unregisterServlet() {
 		if (this.servlet != null) {
 			HttpService service = getHttpService();
@@ -140,11 +140,17 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 
 		protected void doGet(HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {
+			resetVariables();
 			readAndSetLogs();
 			setLogLevelParameter(request);
 			setContent();
 			startAndSetPrintWriter(response);
 			render();
+		}
+		
+		private void resetVariables() {
+			this.isNextRowOdd = true;
+			this.logLevel = LogService.LOG_INFO;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -155,7 +161,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			}
 			else {
 				this.logs = null;
-			}			
+			}
 		}
 
 		private void setLogLevelParameter(HttpServletRequest request) {
@@ -198,7 +204,9 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			appendToContent("<head>");
 			appendToContent("</head>");
 			appendToContent("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>");
-			appendToContent("<link href=\"style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>");
+			appendToContent(String.format(
+					"<link href=\"%s/style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>",
+					currentServletAlias));
 			appendToContent("<title>Archiftp Logpage</title>");
 		}
 
@@ -234,13 +242,13 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			appendToContent("<div id=\"content\">");
 			appendToContent("<div id=\"primaryContentContainer\">");
 			appendToContent("<div id=\"primaryContent\">");
-			
+
 			appendLogs();
 			appendToContent("</div>");
 			appendToContent("</div>");
 			appendToContent("</div>");
 		}
-		
+
 		private void appendLogs() {
 			if (this.logs != null) {
 				appendLogsHeader();
@@ -261,18 +269,18 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			String level = getStringOfLogLevel(this.logLevel);
 			appendToContent(String.format("<h2>Log (%s level)</h2>", level));
 		}
-		
+
 		private void appendNoticeIfDebugLevel() {
 			if (this.logLevel == LogService.LOG_DEBUG) {
 				appendToContent("<h3>Notice</h3>");
 				appendToContent("<blockquote>");
-				appendToContent("<p>If there is no debug log. The configuration of OSGi framework " +
-						"maybe set to don't log in debug level. (Ex. in Felix, you must to add " +
-						"'org.apache.felix.log.storeDebug=true' in conf/config.properties)</p>");
+				appendToContent("<p>If there is no debug log. The configuration of OSGi framework "
+						+ "maybe set to don't log in debug level. (Ex. in Felix, you must to add "
+						+ "'org.apache.felix.log.storeDebug=true' in conf/config.properties)</p>");
 				appendToContent("</blockquote>");
 			}
 		}
-		
+
 		private void appendTableHeader() {
 			appendToContent("<table>");
 			appendToContent("<tr class=\"rowH\">");
@@ -335,9 +343,9 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		private void appendFooter() {
 			this.content.append("<div class=\"clear\"></div>");
 			this.content.append("<div id=\"footer\">");
-			this.content.append("<p>Powered by <a href=\"http://www.microx.co.th/\">MicroX</a>, " +
-					"Template by <a href=\"http://www.freecsstemplates.org/\">" +
-					"Free CSS Templates</a></p>");
+			this.content.append("<p>Powered by <a href=\"http://www.microx.co.th/\">MicroX</a>, "
+					+ "Template by <a href=\"http://www.freecsstemplates.org/\">"
+					+ "Free CSS Templates</a></p>");
 			this.content.append("</div>");
 			this.content.append("</body>");
 			this.content.append("</html>");
@@ -370,13 +378,13 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			restartServlet();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void updateAlias(Dictionary properties) throws ConfigurationException {
 		String newServletAlias = (String) properties.get("alias");
 		setServletAlias(newServletAlias);
 	}
-	
+
 	private void restartServlet() {
 		if (this.firstRunPassed == true) {
 			unregisterServlet();
@@ -384,7 +392,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		registerNewLogpageServletWithRetries();
 		this.firstRunPassed = true;
 	}
-	
+
 	public String getServletAlias() {
 		return servletAlias;
 	}
@@ -392,59 +400,61 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 	public void setServletAlias(String servletAlias) {
 		this.servletAlias = servletAlias;
 	}
-	
+
 	private void logWarningHttpServiceNotFoundAndTryAgain() {
-		String logMessage = "Can't register servlet (HttpService required). " +
-				"Trying to register again in a few seconds.";
+		String logMessage = "Can't register servlet (HttpService required). "
+				+ "Trying to register again in a few seconds.";
 		logWarning(logMessage);
 	}
-	
+
 	private void logErrorUnexpected(Exception e) {
 		String logMessage = "Interrupted when waiting for retry.";
 		logError(logMessage, e);
 	}
-	
+
 	private void logErrorDuplicatedAlias(Exception e) {
-		String logMessage = "Can't register servlet or resource " +
-				"(The alias is using by other servlet).";
+		String logMessage = "Can't register servlet or resource "
+				+ "(The alias is using by other servlet).";
 		logError(logMessage, e);
 	}
-	
+
 	private void logErrorServletNotFound(Exception e) {
 		String logMessage = "Can't register servlet (Servlet object maybe null).";
 		logError(logMessage, e);
 	}
-	
+
 	private void logErrorRegisterHttpServiceNotFound() {
 		String logMessage = "Can't register servlet (HttpService required).";
 		logError(logMessage);
 	}
-	
+
 	private void logErrorUnregisterHttpServiceNotFound() {
 		String logMessage = "Can't unregister servlet (HttpService required).";
 		logError(logMessage);
 	}
-	
+
 	private void logInfoReistered() {
-		String logMessage = String.format("Logpage servlet '%s' was registered.", this.currentServletAlias);
+		String logMessage = String.format("Logpage servlet '%s' was registered.",
+				this.currentServletAlias);
 		logInfo(logMessage);
 	}
-	
+
 	private void logInfoUnregistered() {
-		String logMessage = String.format("Logpage servlet '%s' was unregistered.", this.currentServletAlias);
+		String logMessage = String.format("Logpage servlet '%s' was unregistered.",
+				this.currentServletAlias);
 		logInfo(logMessage);
 	}
-	
+
 	private void logInfoPropertiesUpdated() {
-		String logMessage = String.format("Properties of LogpageService updated. "
-				+ "{%s=%s}", "alias", this.servletAlias);
+		String logMessage = String.format("Properties of LogpageService updated. " + "{%s=%s}",
+				"alias", this.servletAlias);
 		logInfo(logMessage);
 	}
 
 	private void logError(String message) {
 		log(LogService.LOG_ERROR, message);
 	}
-	
+
 	private void logError(String message, Exception e) {
 		log(LogService.LOG_ERROR, message, e);
 	}
@@ -452,7 +462,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 	private void logWarning(String message) {
 		log(LogService.LOG_WARNING, message);
 	}
-	
+
 	private void logInfo(String message) {
 		log(LogService.LOG_INFO, message);
 	}
@@ -462,17 +472,17 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		if (logService != null) {
 			logService.log(level, message);
 		}
-		
+
 		String nameOfLevel = getStringOfLogLevel(level);
 		System.out.println(String.format("[%s] %s", nameOfLevel, message));
 	}
-	
+
 	private void log(int level, String message, Exception e) {
 		LogService logService = getLogService();
 		if (logService != null) {
 			logService.log(level, message, e);
 		}
-		
+
 		String nameOfLevel = getStringOfLogLevel(level);
 		System.out.println(String.format("[%s] %s (%s: %s)", nameOfLevel, message, e.getClass()
 				.getName(), e.getMessage()));
