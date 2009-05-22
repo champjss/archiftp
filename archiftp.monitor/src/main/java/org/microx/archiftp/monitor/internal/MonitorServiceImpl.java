@@ -285,12 +285,12 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 
 	private void logDebugMonitorStart() {
 		String logMessage = "Monitoring is started.";
-		logDebug(logMessage);
+		logInfo(logMessage);
 	}
 
 	private void logDebugMonitorStop() {
 		String logMessage = "Monitoring is stopped.";
-		logDebug(logMessage);
+		logInfo(logMessage);
 	}
 
 	private void logInfoPropertiesUpdated() {

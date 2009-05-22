@@ -3,9 +3,9 @@
 	<OCD id="org.microx.archiftp.ftp" name="Archiftp (FTP)" description="FTP service of Archiftp">
 		<AD id="hostname" type="String" required="true" default="localhost" name="Hostname" description="Hostname of FTP Server."/>
 		<AD id="port" type="Integer" required="true" default="21" name="Port" description="Port number to connect to FTP server."/>
-		<AD id="username" type="String" default="" name="Username" description="Username that be used to connect to FTP server."/>
+		<AD id="username" type="String" default="anonymous" name="Username" description="Username that be used to connect to FTP server."/>
 		<AD id="password" type="String" default="" name="Password" description="Password, which is matched with username."/>
-		<AD id="directory" type="String" required="true" default="" name="Target Directory" description="Path of the absolute directory in FTP server to upload files."/>
+		<AD id="directory" type="String" required="true" default="/" name="Target Directory" description="Path of the absolute directory in FTP server to upload files."/>
 	</OCD>
 	<Designate pid="org.microx.archiftp.ftp">
 		<Object ocdref="org.microx.archiftp.ftp"/>

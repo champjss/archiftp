@@ -44,12 +44,15 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 
 		if (login() == false) {
 			logErrorLoginFailed();
-			throw new IOException("Login to server failed.");
+			throw new IOException(String.format("Login to server with username '%s' failed.",
+					this.username));
 		}
 
 		if (upload(file) == false) {
 			logErrorUploadFailed(file);
-			throw new IOException("Uploading file failed.");
+			throw new IOException(String.format(
+					"Uploading file failed. (Is directory '%s' exists and writeable?)",
+					this.directory));
 		}
 
 		disconnect();
@@ -198,7 +201,8 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 	}
 
 	private void logErrorUploadFailed(File file) {
-		logError(String.format("Uploading file '%s' to '%s:%d%s' failed.", file.getAbsolutePath(),
+		logError(String.format("Uploading file '%s' to '%s:%d%s' failed.  " +
+				"(Is directory exists and writeable?)", file.getAbsolutePath(),
 				this.hostname, this.port, this.directory));
 	}
 
@@ -209,8 +213,8 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 
 	private void logInfoPropertiesUpdated() {
 		String logMessage = String.format("Properties of FtpService updated. "
-				+ "{%s=%s, %s=%d, %s=%s, %s=%s, %s=%s}", "hostname", this.hostname,
-				"port", this.port, "username", this.username, "password", "******", "directory",
+				+ "{%s=%s, %s=%d, %s=%s, %s=%s, %s=%s}", "hostname", this.hostname, "port",
+				this.port, "username", this.username, "password", "******", "directory",
 				this.directory);
 		logInfo(logMessage);
 	}
@@ -257,7 +261,7 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		if (this.logServiceTracker == null) {
 			return null;
 		}
-		
+
 		return (LogService) this.logServiceTracker.getService();
 	}
 
