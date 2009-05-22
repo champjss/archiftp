@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
 	<OCD id="org.microx.archiftp.historywriter" name="Archiftp (HistoryWritter)" description="History Writer Service of Archiftp">
-		<AD id="history-path" type="String" requied="true" default="history" name="History file path" description="Path to history file."/>
+		<AD id="history-path" type="String" requied="true" default="./history" name="History file path" description="Path to history file."/>
 		<AD id="seperate-file-by-date" type="Boolean" default="false" name="Seperate history file by date" description="Seperate incoming history messages into files by date (Ex. history.20090520)"/>
 	</OCD>
 	<Designate pid="org.microx.archiftp.historywriter">
