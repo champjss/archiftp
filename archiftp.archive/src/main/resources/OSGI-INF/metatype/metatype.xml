@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
 	<OCD id="org.microx.archiftp.archive" name="Archiftp (Archive)" description="Archive service of Archiftp">
-		<AD id="archive-path" type="String" requied="true" default="" name="Archive Path" description="Absolute path to archive directory."/>
+		<AD id="archive-path" type="String" requied="true" default="" name="Archive Path" description="Path to archive directory."/>
 		<AD id="seperate-folder-by-date" type="Boolean" default="false" name="Seperate folder by date" description="Seperate incoming files into folders by date (Ex. $_ARCHIVE_PATH/20090520/)"/>
 	</OCD>
 	<Designate pid="org.microx.archiftp.archive">
