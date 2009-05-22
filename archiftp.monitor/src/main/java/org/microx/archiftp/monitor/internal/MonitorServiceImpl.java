@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.Thread.State;
 import java.util.Dictionary;
+import java.util.Hashtable;
+
+import javax.management.ServiceNotFoundException;
 
 import org.microx.archiftp.archive.ArchiveService;
 import org.microx.archiftp.archive.PermissionDeniedException;
@@ -12,6 +15,9 @@ import org.microx.archiftp.ftp.FtpService;
 import org.microx.archiftp.monitor.MonitorService;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -21,6 +27,7 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 	private ServiceTracker logServiceTracker;
 	private ServiceTracker ftpServiceTracker;
 	private ServiceTracker archiveServiceTracker;
+	private ServiceTracker eventAdminServiceTracker;
 
 	// Managed Properties
 	private String monitorPath;
@@ -32,10 +39,11 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 	private boolean firstRunPassed = false;
 
 	public MonitorServiceImpl(ServiceTracker logServiceTracker, ServiceTracker ftpServiceTracker,
-			ServiceTracker archiveServiceTracker) {
+			ServiceTracker archiveServiceTracker, ServiceTracker eventAdminServiceTracker) {
 		this.logServiceTracker = logServiceTracker;
 		this.ftpServiceTracker = ftpServiceTracker;
 		this.archiveServiceTracker = archiveServiceTracker;
+		this.eventAdminServiceTracker = eventAdminServiceTracker;
 	}
 
 	public void startMonitor() {
@@ -98,57 +106,79 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		private void doMonitorJob() {
 			File[] files = this.monitorDirectory.listFiles();
 			for (File file : files) {
-				doJobsForFile(file);
-			}
-		}
-
-		private void doJobsForFile(File file) {
-			boolean result;
-
-			result = doFtpJob(file);
-			if (result == false) {
-				return;
-			}
-
-			doArchiveJob(file);
-		}
-
-		private boolean doFtpJob(File file) {
-			boolean result = false;
-			FtpService ftp = getFtpService();
-			if (ftp != null) {
 				try {
-					ftp.uploadFile(file);
-					result = true;
-				}
-				catch (FileNotFoundException e) {
-					logErrorFtpFailed(file, e);
+					doJobsForFile(file);
 				}
 				catch (IOException e) {
-					logErrorFtpFailed(file, e);
+					logErrorIOException(file, e);
+					break;
+				}
+				catch (ServiceNotFoundException e) {
+					logErrorServiceNotFound(file, e);
+					break;
 				}
 			}
-
-			return result;
 		}
 
-		private boolean doArchiveJob(File file) {
-			boolean result = false;
+		private void doJobsForFile(File file) throws ServiceNotFoundException, IOException {
+			try {
+				doFtpJob(file);
+				postEventForHistoryWriter(file);
+				doArchiveJob(file);
+			}
+			catch (FileNotFoundException e) {
+				logErrorFileNotFound(file, e);
+			}
+		}
+
+		private void doFtpJob(File file) throws FileNotFoundException, IOException,
+				ServiceNotFoundException {
+			FtpService ftp = getFtpService();
+			if (ftp != null) {
+				ftp.uploadFile(file);
+			}
+			else {
+				throw new ServiceNotFoundException("FTPService not found.");
+			}
+		}
+
+		private void postEventForHistoryWriter(File file) {
+			Event event = getEventForHistoryWriter(file);
+			EventAdmin service = getEventAdminService();
+
+			if (service != null) {
+				service.postEvent(event);
+			}
+			else {
+				logWarningEventAdminServiceNotFound();
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private Event getEventForHistoryWriter(File file) {
+			String message = getEventMessageForHistoryWriter(file);
+			Dictionary properties = new Hashtable();
+			properties.put(EventConstants.MESSAGE, message);
+			return new Event("org/microx/archiftp/FILE_UPLOADED", properties);
+		}
+
+		private String getEventMessageForHistoryWriter(File file) {
+			return String.format("'%s' was uploaded.", file.getAbsolutePath());
+		}
+
+		private void doArchiveJob(File file) throws FileNotFoundException, ServiceNotFoundException {
 			ArchiveService archive = getArchiveService();
 			if (archive != null) {
 				try {
 					archive.moveFileToArchive(file);
-					result = true;
-				}
-				catch (FileNotFoundException e) {
-					logErrorArchiveFailed(file, e);
 				}
 				catch (PermissionDeniedException e) {
-					logErrorArchiveFailed(file, e);
+					logErrorPermissionDenied(file, e);
 				}
 			}
-
-			return result;
+			else {
+				throw new ServiceNotFoundException("ArchiveService not found.");
+			}
 		}
 
 		private void waitForInterval() {
@@ -159,6 +189,14 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 				logErrorThreadInterrupted(e);
 			}
 		}
+	}
+
+	private EventAdmin getEventAdminService() {
+		if (this.eventAdminServiceTracker == null) {
+			return null;
+		}
+
+		return (EventAdmin) this.eventAdminServiceTracker.getService();
 	}
 
 	private void stopMonitorThreadIfExists() {
@@ -267,15 +305,33 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		logError(logMessage);
 	}
 
-	private void logErrorFtpFailed(File file, Exception e) {
-		String logMessage = String.format("Upload file '%s' failed.", file.getAbsolutePath());
+	private void logErrorIOException(File file, Exception e) {
+		String logMessage = String.format("Upload file '%s' failed. (IOException)",
+				file.getAbsolutePath());
 		logError(logMessage, e);
 	}
 
-	private void logErrorArchiveFailed(File file, Exception e) {
-		String logMessage = String.format("Moving file '%s' to archive failed.",
+	private void logErrorServiceNotFound(File file, Exception e) {
+		String logMessage = String.format("Upload and moving file '%s' failed. "
+				+ "(FtpService and/or ArchiveService not found)", file.getAbsolutePath());
+		logError(logMessage, e);
+	}
+
+	private void logErrorFileNotFound(File file, Exception e) {
+		String logMessage = String.format("Upload and moving file '%s' failed. "
+				+ "(File not found)", file.getAbsolutePath());
+		logError(logMessage, e);
+	}
+
+	private void logErrorPermissionDenied(File file, Exception e) {
+		String logMessage = String.format("Moving file '%s' failed (Permission denied).",
 				file.getAbsolutePath());
 		logError(logMessage, e);
+	}
+
+	private void logWarningEventAdminServiceNotFound() {
+		String logMessage = "EventAdminService not found. History not be wrote.";
+		logWarning(logMessage);
 	}
 
 	private void logErrorThreadInterrupted(Exception e) {
@@ -308,8 +364,8 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		log(LogService.LOG_ERROR, message, e);
 	}
 
-	private void logDebug(String message) {
-		log(LogService.LOG_DEBUG, message);
+	private void logWarning(String message) {
+		log(LogService.LOG_WARNING, message);
 	}
 
 	private void logInfo(String message) {

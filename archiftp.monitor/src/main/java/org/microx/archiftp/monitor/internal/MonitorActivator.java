@@ -9,6 +9,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.event.EventAdmin;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -24,18 +25,21 @@ public final class MonitorActivator implements BundleActivator {
 	private ServiceTracker logServiceTracker;
 	private ServiceTracker ftpServiceTracker;
 	private ServiceTracker archiveServiceTracker;
+	private ServiceTracker eventAdminServiceTracker;
 
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		this.logServiceTracker = getLogServiceTracker();
 		this.ftpServiceTracker = getFtpServiceTracker();
 		this.archiveServiceTracker = getArchiveServiceTracker();
+		this.eventAdminServiceTracker = getEventAdminServiceTracker();
 		this.logServiceTracker.open();
 		this.ftpServiceTracker.open();
 		this.archiveServiceTracker.open();
+		this.eventAdminServiceTracker.open();
 
 		MonitorService MonitorService = new MonitorServiceImpl(this.logServiceTracker,
-				this.ftpServiceTracker, this.archiveServiceTracker);
+				this.ftpServiceTracker, this.archiveServiceTracker, this.eventAdminServiceTracker);
 		registerManagedService(MonitorService);
 		registerMonitorService(MonitorService);
 	}
@@ -43,6 +47,7 @@ public final class MonitorActivator implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		this.ftpServiceTracker.close();
 		this.archiveServiceTracker.close();
+		this.eventAdminServiceTracker.close();
 		this.logServiceTracker.close();
 	}
 
@@ -56,6 +61,10 @@ public final class MonitorActivator implements BundleActivator {
 
 	private ServiceTracker getArchiveServiceTracker() {
 		return new ServiceTracker(this.context, ArchiveService.class.getName(), null);
+	}
+	
+	private ServiceTracker getEventAdminServiceTracker() {
+		return new ServiceTracker(this.context, EventAdmin.class.getName(), null);
 	}
 
 	@SuppressWarnings("unchecked")

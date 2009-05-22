@@ -25,6 +25,7 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 
 	// Other properties
 	private File archive;
+	private DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	public ArchiveServiceImpl(ServiceTracker logServiceTracker) {
 		this.logServiceTracker = logServiceTracker;
@@ -103,9 +104,7 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 	}
 
 	private String getStringOfCurrentDate() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-		String result = dateFormat.format(new Date());
-		return result;
+		return this.dateFormat.format(new Date());
 	}
 
 	private File getNewFileInArchiveAtRoot(File file) {

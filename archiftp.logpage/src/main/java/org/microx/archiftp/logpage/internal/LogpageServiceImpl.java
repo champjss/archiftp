@@ -136,7 +136,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 
 		private Enumeration<LogEntry> logs;
 		private boolean isNextRowOdd = true;
-		private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd KK:mm:ss");
+		private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		protected void doGet(HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {

@@ -51,6 +51,7 @@
     <module>archiftp.ftp</module>
     <module>archiftp.archive</module>
     <module>archiftp.monitor</module>
+    <module>archiftp.historywriter</module>
   </modules>
 
   <build>
