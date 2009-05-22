@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Export-Package: org.microx.archiftp.historywriter;version="1.0.0"
+Private-Package: org.microx.archiftp.historywriter.internal
+Ignore-Package: org.microx.archiftp.historywriter.internal
+Built-By: champjss
+Tool: Bnd-0.0.255
+Bundle-Name: org.microx.archiftp.historywriter
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.6.0_13
+Bundle-Version: 1.0.0
+Bnd-LastModified: 1242980946828
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.microx.archiftp.historywriter.internal.HistoryWriterActivator
+Bundle-Description: Generated using Pax-Construct
+Import-Package: org.microx.archiftp.historywriter;version="1.0.0",org.
+ osgi.framework
+Bundle-SymbolicName: org.microx.archiftp.historywriter
+
