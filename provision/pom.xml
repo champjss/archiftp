@@ -57,7 +57,13 @@
       <artifactId>org.apache.felix.webconsole</artifactId>
       <version>1.2.10</version>
       <scope>provided</scope>
-    </dependency> 
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.eventadmin</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>  
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>com.springsource.org.apache.commons.net</artifactId>
