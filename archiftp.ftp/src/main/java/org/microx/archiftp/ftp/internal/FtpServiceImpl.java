@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.SocketException;
 import java.util.Dictionary;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.microx.archiftp.ftp.FtpService;
 import org.osgi.service.cm.ConfigurationException;
@@ -48,6 +49,11 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 					this.username));
 		}
 
+		if (changeFileTypeToBinary() == false) {
+			logErrorChangeFileTypeFailed();
+			throw new IOException("Changing upload file type to binary failed.");
+		}
+		
 		if (upload(file) == false) {
 			logErrorUploadFailed(file);
 			throw new IOException(String.format(
@@ -71,6 +77,10 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		return ftp.login(this.username, this.password);
 	}
 
+	private boolean changeFileTypeToBinary() throws IOException {
+		return ftp.setFileType(FTP.BINARY_FILE_TYPE);
+	}
+	
 	private boolean upload(File file) throws FileNotFoundException, IOException {
 		String path = getFilePathInServer(file);
 		InputStream stream = getFileStream(file);
@@ -198,6 +208,10 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 	private void logErrorLoginFailed() {
 		logError(String.format("Login to '%s:%d' with username '%s' failed.", this.hostname,
 				this.port, this.username));
+	}
+	
+	private void logErrorChangeFileTypeFailed() {
+		logError("Changing upload file type to binary failed.");
 	}
 
 	private void logErrorUploadFailed(File file) {
