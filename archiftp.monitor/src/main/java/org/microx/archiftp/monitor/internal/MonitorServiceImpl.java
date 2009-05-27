@@ -35,6 +35,7 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 
 	// Other properties
 	private Thread monitorThread;
+	private long waitTimeForUnlockFile = 500;
 	private boolean monitorStopFlag = false;
 	private boolean firstRunPassed = false;
 
@@ -124,6 +125,7 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 			try {
 				doFtpJob(file);
 				postEventForHistoryWriter(file);
+				waitForUnlockFile();
 				doArchiveJob(file);
 			}
 			catch (FileNotFoundException e) {
@@ -184,6 +186,16 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		private void waitForInterval() {
 			try {
 				Thread.sleep(this.currentMonitorInterval);
+			}
+			catch (InterruptedException e) {
+				logErrorThreadInterrupted(e);
+			}
+		}
+		
+				
+		private void waitForUnlockFile() {
+			try {
+				Thread.sleep(currentMonitorInterval);
 			}
 			catch (InterruptedException e) {
 				logErrorThreadInterrupted(e);

@@ -84,7 +84,9 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 	private boolean upload(File file) throws FileNotFoundException, IOException {
 		String path = getFilePathInServer(file);
 		InputStream stream = getFileStream(file);
-		return storeFile(path, stream);
+		boolean result = storeFile(path, stream);
+		stream.close();
+		return result;
 	}
 
 	private String getFilePathInServer(File file) {

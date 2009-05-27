@@ -43,7 +43,8 @@ public class Main
     /**
      * Name of the configuration directory.
      */
-    public static final String CONFIG_DIRECTORY = "conf";
+    // public static final String CONFIG_DIRECTORY = "conf";
+     public static final String CONFIG_DIRECTORY = "conf";
 
     private static Framework m_felix = null;
 
@@ -249,7 +250,7 @@ public class Main
             // out where felix.jar is located on the system class path.
             File confDir = null;
             String classpath = System.getProperty("java.class.path");
-            int index = classpath.toLowerCase().indexOf("felix.jar");
+            int index = classpath.toLowerCase().indexOf("felixcontroller.jar");
             int start = classpath.lastIndexOf(File.pathSeparator, index) + 1;
             if (index >= start)
             {
@@ -277,7 +278,7 @@ public class Main
                 return;
             }
         }
-
+        
         // Read the properties file.
         Properties props = new Properties();
         InputStream is = null;
@@ -360,7 +361,7 @@ public class Main
             // out where felix.jar is located on the system class path.
             File confDir = null;
             String classpath = System.getProperty("java.class.path");
-            int index = classpath.toLowerCase().indexOf("felix.jar");
+            int index = classpath.toLowerCase().indexOf("felixcontroller.jar");
             int start = classpath.lastIndexOf(File.pathSeparator, index) + 1;
             if (index >= start)
             {
@@ -388,7 +389,6 @@ public class Main
                 return null;
             }
         }
-
         // Read the properties file.
         Properties props = new Properties();
         InputStream is = null;
