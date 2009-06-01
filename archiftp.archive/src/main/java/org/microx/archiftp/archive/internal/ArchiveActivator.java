@@ -39,7 +39,6 @@ public final class ArchiveActivator implements BundleActivator {
 		return new ServiceTracker(this.context, LogService.class.getName(), null);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerArchiveService(Object archiveService) {
 		if (archiveService instanceof ArchiveService) {
 			Dictionary properties = getArchiveServiceProperties();
@@ -47,7 +46,6 @@ public final class ArchiveActivator implements BundleActivator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Dictionary getArchiveServiceProperties() {
 		ConfigurationAdmin configAdminService = getConfigurationAdminService();
 		Dictionary properties = new Properties();
@@ -71,7 +69,6 @@ public final class ArchiveActivator implements BundleActivator {
 		return this.context.getServiceReference(ConfigurationAdmin.class.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerManagedService(Object managedService) {
 		if (managedService instanceof ManagedService) {
 			Dictionary properties = new Properties();
@@ -91,10 +88,8 @@ public final class ArchiveActivator implements BundleActivator {
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			String exceptionClass = e.getClass().getName();
-			String exceptionMessage = e.getMessage();
-			System.out.println(String.format("[%s] %s (%s, %s)", nameOfLevel, message,
-					exceptionClass, exceptionMessage));
+			System.out.println("[" + nameOfLevel + "] " + message);
+			e.printStackTrace();
 		}
 	}
 

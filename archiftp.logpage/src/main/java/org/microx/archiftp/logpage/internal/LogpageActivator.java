@@ -59,7 +59,6 @@ public final class LogpageActivator implements BundleActivator {
 		return new ServiceTracker(this.context, LogReaderService.class.getName(), null);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerLogpageService(Object LogpageService) {
 		if (LogpageService instanceof LogpageService) {
 			Dictionary properties = getLogpageServiceProperties();
@@ -67,7 +66,6 @@ public final class LogpageActivator implements BundleActivator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Dictionary getLogpageServiceProperties() {
 		ConfigurationAdmin configAdminService = getConfigurationAdminService();
 		Dictionary properties = new Properties();
@@ -91,7 +89,6 @@ public final class LogpageActivator implements BundleActivator {
 		return this.context.getServiceReference(ConfigurationAdmin.class.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerManagedService(Object managedService) {
 		if (managedService instanceof ManagedService) {
 			Dictionary properties = new Properties();
@@ -113,8 +110,8 @@ public final class LogpageActivator implements BundleActivator {
 			String nameOfLevel = getNameOfLevel(level);
 			String exceptionClass = e.getClass().getName();
 			String exceptionMessage = e.getMessage();
-			System.out.println(String.format("[%s] %s (%s, %s)", nameOfLevel, message,
-					exceptionClass, exceptionMessage));
+			System.out.println("[" + nameOfLevel + "] " + message);
+			e.printStackTrace();
 		}
 	}
 

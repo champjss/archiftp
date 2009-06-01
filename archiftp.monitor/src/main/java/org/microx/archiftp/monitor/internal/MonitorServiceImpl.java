@@ -106,7 +106,8 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 
 		private void doMonitorJob() {
 			File[] files = this.monitorDirectory.listFiles();
-			for (File file : files) {
+			for (int i = 0; i < files.length; i++) {
+                File file = files[i];
 				try {
 					doJobsForFile(file);
 				}
@@ -156,7 +157,6 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 			}
 		}
 
-		@SuppressWarnings("unchecked")
 		private Event getEventForHistoryWriter(File file) {
 			String message = getEventMessageForHistoryWriter(file);
 			Dictionary properties = new Hashtable();
@@ -165,7 +165,7 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		}
 
 		private String getEventMessageForHistoryWriter(File file) {
-			return String.format("'%s' was uploaded.", file.getAbsolutePath());
+			return "' " + file.getAbsolutePath() + "' was uploaded.";
 		}
 
 		private void doArchiveJob(File file) throws FileNotFoundException, ServiceNotFoundException {
@@ -248,7 +248,6 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		this.monitorStopFlag = true;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updated(Dictionary properties) throws ConfigurationException {
 		if (properties != null) {
 			updateMonitorPath(properties);
@@ -258,18 +257,16 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateMonitorPath(Dictionary properties) {
 		String newMonitorPath = (String) properties.get("monitor-path");
 		setMonitorPath(newMonitorPath);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateMonitorInterval(Dictionary properties) throws ConfigurationException {
 		long newMonitorInterval;
 
 		try {
-			newMonitorInterval = (Long) properties.get("monitor-interval");
+			newMonitorInterval = ((Long) properties.get("monitor-interval")).longValue();
 		}
 		catch (ClassCastException e) {
 			throw new ConfigurationException("monitor-interval",
@@ -306,38 +303,34 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 	}
 
 	private void logErrorMonitorDirectoryNotFound(File file) {
-		String logMessage = String.format("Directory '%s' to monitor not found.",
-				file.getAbsolutePath());
+		String logMessage = "Directory '" + file.getAbsolutePath() + "' to monitor not found.";
 		logError(logMessage);
 	}
 
 	private void logErrorMonitorNoPermission(File file) {
-		String logMessage = String.format(
-				"Can't monitor directory '%s' because permission denied.", file.getAbsolutePath());
+		String logMessage = "Can't monitor directory '" + file.getAbsolutePath() + "' because permission denied.";
 		logError(logMessage);
 	}
 
 	private void logErrorIOException(File file, Exception e) {
-		String logMessage = String.format("Upload file '%s' failed. (IOException)",
-				file.getAbsolutePath());
+		String logMessage = "Upload file '" + file.getAbsolutePath() + "' failed. (IOException)";
 		logError(logMessage, e);
 	}
 
 	private void logErrorServiceNotFound(File file, Exception e) {
-		String logMessage = String.format("Upload and moving file '%s' failed. "
-				+ "(FtpService and/or ArchiveService not found)", file.getAbsolutePath());
+		String logMessage = "Upload and moving file '" + file.getAbsolutePath() + "' failed. "+
+				"(FtpService and/or ArchiveService not found)";
 		logError(logMessage, e);
 	}
 
 	private void logErrorFileNotFound(File file, Exception e) {
-		String logMessage = String.format("Upload and moving file '%s' failed. "
-				+ "(File not found)", file.getAbsolutePath());
+		String logMessage = "Upload and moving file '" + file.getAbsolutePath() + "' failed. " +
+				"(File not found)";
 		logError(logMessage, e);
 	}
 
 	private void logErrorPermissionDenied(File file, Exception e) {
-		String logMessage = String.format("Moving file '%s' failed (Permission denied).",
-				file.getAbsolutePath());
+		String logMessage = "Moving file '" + file.getAbsolutePath() + "' failed (Permission denied).";
 		logError(logMessage, e);
 	}
 
@@ -362,9 +355,8 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 	}
 
 	private void logInfoPropertiesUpdated() {
-		String logMessage = String.format("Properties of MonitorService updated. "
-				+ "{%s=%s, %s=%d}", "monitor-path", this.monitorPath, "monitor-interval",
-				this.monitorInterval);
+		String logMessage = "Properties of MonitorService updated. " +
+				"{monitor-path=" + this.monitorPath + ", monitor-interval=" + this.monitorInterval + "}";
 		logInfo(logMessage);
 	}
 
@@ -391,7 +383,7 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			System.out.println(String.format("[%s] %s", nameOfLevel, message));
+			System.out.println("[" + nameOfLevel + "] " + message);
 		}
 	}
 
@@ -402,8 +394,8 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			System.out.println(String.format("[%s] %s (%s: %s)", nameOfLevel, message, e.getClass()
-					.getName(), e.getMessage()));
+			System.out.println("[" + nameOfLevel + "] " + message);
+            e.printStackTrace();
 		}
 	}
 

@@ -62,7 +62,7 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 
 	private String getFileNameAppendedWithDate() {
 		String dateString = this.dateFormatForFileName.format(this.currentDate);
-		return String.format("%s.%s", this.historyFilePath, dateString);
+		return this.historyFilePath + "." + dateString;
 	}
 
 	private void writeHistory(Event event) throws IOException {
@@ -75,8 +75,10 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 	private String getHistoryMessage(Event event) {
 		String stringOfDateTime = this.dateFormatForHistory.format(this.currentDate);
 		String messageText = (String) event.getProperty(EventConstants.MESSAGE);
-		return String.format("[%s] %s%s", stringOfDateTime, messageText,
-				System.getProperty("line.separator"));
+		StringBuffer buff = new StringBuffer();
+		buff.append('[').append(stringOfDateTime).append(']');
+		buff.append(' ').append(messageText).append(System.getProperty("line.separator"));
+		return buff.toString();
 	}
 
 	private void closeHistoryFileWriter() throws IOException {
@@ -84,7 +86,6 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 		this.historyFileWriter.close();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updated(Dictionary properties) throws ConfigurationException {
 		if (properties != null) {
 			updateHistoryFilePath(properties);
@@ -93,17 +94,15 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateHistoryFilePath(Dictionary properties) throws ConfigurationException {
 		String newFilePath = (String) properties.get("history-path");
 		setHistoryFilePath(newFilePath);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateSeperateHistoryFileByDate(Dictionary properties)
 			throws ConfigurationException {
 		try {
-			boolean newValue = (Boolean) properties.get("seperate-file-by-date");
+			boolean newValue = ((Boolean) properties.get("seperate-file-by-date")).booleanValue();
 			setSeperateHistoryFileByDate(newValue);
 		}
 		catch (ClassCastException e) {
@@ -136,9 +135,8 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 	}
 
 	private void logInfoPropertiesUpdated() {
-		String logMessage = String.format("Properties of HistoryWriter updated. {%s=%s, %s=%s}",
-				"history-path", this.historyFilePath, "seperate-file-by-date",
-				this.seperateHistoryFileByDate);
+		String logMessage = "Properties of HistoryWriter updated. {history-path=" + this.historyFilePath + 
+		    ", seperate-file-by-date=" + this.seperateHistoryFileByDate + "}";
 		logInfo(logMessage);
 	}
 
@@ -157,7 +155,7 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			System.out.println(String.format("[%s] %s", nameOfLevel, message));
+			System.out.println("[" + nameOfLevel + "]" + message);
 		}
 	}
 
@@ -168,8 +166,8 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			System.out.println(String.format("[%s] %s (%s: %s)", nameOfLevel, message, e.getClass()
-					.getName(), e.getMessage()));
+			System.out.println("[" + nameOfLevel + "] " + message);
+            e.printStackTrace();
 		}
 	}
 

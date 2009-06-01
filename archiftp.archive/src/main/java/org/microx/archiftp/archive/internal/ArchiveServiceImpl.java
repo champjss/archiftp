@@ -47,23 +47,19 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 	private void checkIsFileAvailable(File file) throws FileNotFoundException,
 			PermissionDeniedException {
 		if (file.exists() == false) {
-			throw new FileNotFoundException(String.format("File '%s' not found.",
-					file.getAbsolutePath()));
+			throw new FileNotFoundException("File '" + file.getAbsolutePath() + "' not found.");
 		}
 		if (file.getParentFile().canWrite() == false) {
-			throw new PermissionDeniedException(String.format("No permission to move file '%s'.",
-					file.getAbsolutePath()));
+			throw new PermissionDeniedException("No permission to move file '" + file.getAbsolutePath() + "'.");
 		}
 	}
 
 	private void checkIsArchiveAvailable() throws FileNotFoundException, PermissionDeniedException {
 		if (this.archive.exists() == false) {
-			throw new FileNotFoundException(String.format("Archive '%s' not found.",
-					this.archive.getAbsolutePath()));
+			throw new FileNotFoundException("Archive '" + this.archive.getAbsolutePath() + "' not found.");
 		}
 		if (this.archive.canWrite() == false) {
-			throw new PermissionDeniedException(String.format(
-					"No permission to write to archive '%s'.", this.archive.getAbsolutePath()));
+			throw new PermissionDeniedException("No permission to write to archive '" + this.archive.getAbsolutePath() + "'.");
 		}
 	}
 
@@ -115,11 +111,14 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 	}
 
 	private String getStringOfAbsolutePath(String directoryPath, String fileName) {
-		return String.format("%s%s%s", directoryPath, File.separator, fileName);
+	    StringBuffer buff = new StringBuffer();
+	    buff.append(directoryPath);
+	    buff.append(File.separator);
+	    buff.append(fileName);
+	    return buff.toString();
 	}
 
 	// ManagedService
-	@SuppressWarnings("unchecked")
 	public void updated(Dictionary properties) throws ConfigurationException {
 		if (properties != null) {
 			updateArchive(properties);
@@ -128,16 +127,14 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateArchive(Dictionary properties) {
 		String newArchivePath = (String) properties.get("archive-path");
 		setArchivePath(newArchivePath);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateSeperateFolderByDate(Dictionary properties) throws ConfigurationException {
 		try {
-			boolean newValue = (Boolean) properties.get("seperate-folder-by-date");
+			boolean newValue = ((Boolean) properties.get("seperate-folder-by-date")).booleanValue();
 			setSeperateFolderByDate(newValue);
 		}
 		catch (ClassCastException e) {
@@ -165,15 +162,13 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 
 	// Log
 	private void logDebugFileMoved(File file, File newFile) {
-		String logMessage = String.format("File was moved to archive. (%s -> %s)",
-				file.getAbsolutePath(), newFile.getAbsolutePath());
+		String logMessage = "File was moved to archive. (" + file.getAbsolutePath() + " -> " + newFile.getAbsolutePath() + ")";
 		logDebug(logMessage);
 	}
 
 	private void logInfoPropertiesUpdated() {
-		String logMessage = String.format("Properties of ArchiveService updated. {%s=%s, %s=%s}",
-				"archive-path", this.archivePath, "seperate-folder-by-date",
-				this.seperateFolderByDate);
+		String logMessage = "Properties of ArchiveService updated. {archive-path=" + this.archivePath + 
+		    ", seperate-folder-by-date= " + this.seperateFolderByDate + "}";
 		logInfo(logMessage);
 	}
 
@@ -192,7 +187,7 @@ public final class ArchiveServiceImpl implements ArchiveService, ManagedService 
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			System.out.println(String.format("[%s] %s", nameOfLevel, message));
+			System.out.println("[ " + nameOfLevel + "] " + message);
 		}
 	}
 

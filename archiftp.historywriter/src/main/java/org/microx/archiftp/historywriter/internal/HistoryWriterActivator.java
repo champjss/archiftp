@@ -42,7 +42,6 @@ public final class HistoryWriterActivator implements BundleActivator {
 		return new ServiceTracker(this.context, LogService.class.getName(), null);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerEventHandlerService(Object HistoryWriterService) {
 		if (HistoryWriterService instanceof HistoryWriterService) {
 			Dictionary properties = getHistoryWriterServiceProperties();
@@ -51,7 +50,6 @@ public final class HistoryWriterActivator implements BundleActivator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Dictionary getHistoryWriterServiceProperties() {
 		ConfigurationAdmin configAdminService = getConfigurationAdminService();
 		Dictionary properties = new Properties();
@@ -81,7 +79,6 @@ public final class HistoryWriterActivator implements BundleActivator {
 		return this.context.getServiceReference(ConfigurationAdmin.class.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerManagedService(Object managedService) {
 		if (managedService instanceof ManagedService) {
 			Dictionary properties = new Properties();
@@ -101,10 +98,8 @@ public final class HistoryWriterActivator implements BundleActivator {
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			String exceptionClass = e.getClass().getName();
-			String exceptionMessage = e.getMessage();
-			System.out.println(String.format("[%s] %s (%s, %s)", nameOfLevel, message,
-					exceptionClass, exceptionMessage));
+			System.out.println("[" + nameOfLevel + "] " + message);
+			e.printStackTrace();
 		}
 	}
 

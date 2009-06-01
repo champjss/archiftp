@@ -78,8 +78,8 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		if (service != null) {
 			this.servlet = new LogpageServlet();
 			this.currentServletAlias = this.servletAlias;
-			this.currentStyleAlias = String.format("%s/style", this.currentServletAlias);
-			this.currentImageAlias = String.format("%s/images", this.currentServletAlias);
+			this.currentStyleAlias = this.currentStyleAlias + "/style";
+			this.currentImageAlias = this.currentServletAlias + "/images";
 			try {
 				service.registerResources(this.currentStyleAlias, "/style", null);
 				service.registerResources(this.currentImageAlias, "/images", null);
@@ -127,14 +127,13 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		}
 	}
 
-	@SuppressWarnings("serial")
 	public class LogpageServlet extends HttpServlet {
 
 		private PrintWriter writer;
 		private StringBuffer content;
 		private int logLevel = LogService.LOG_INFO;
 
-		private Enumeration<LogEntry> logs;
+		private Enumeration logs;
 		private boolean isNextRowOdd = true;
 		private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -153,7 +152,6 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			this.logLevel = LogService.LOG_INFO;
 		}
 
-		@SuppressWarnings("unchecked")
 		private void readAndSetLogs() {
 			LogReaderService reader = getLogReaderService();
 			if (reader != null) {
@@ -204,9 +202,9 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 			appendToContent("<head>");
 			appendToContent("</head>");
 			appendToContent("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>");
-			appendToContent(String.format(
-					"<link href=\"%s/style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>",
-					currentServletAlias));
+			appendToContent("<link href=\"");
+			appendToContent(currentServletAlias);
+			appendToContent("/style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>");
 			appendToContent("<title>Archiftp Logpage</title>");
 		}
 
@@ -229,14 +227,10 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 
 		private void appendDivMenu() {
 			appendToContent("<div id=\"menu\">");
-			appendToContent(String.format("<li><a href=\"%s/?level=error\">Error</a></li>",
-					currentServletAlias));
-			appendToContent(String.format("<li><a href=\"%s/?level=warning\">Warning</a></li>",
-					currentServletAlias));
-			appendToContent(String.format("<li><a href=\"%s/?level=info\">Info</a></li>",
-					currentServletAlias));
-			appendToContent(String.format("<li><a href=\"%s/?level=debug\">Debug</a></li>",
-					currentServletAlias));
+            appendToContent("<li><a href=\"" + currentServletAlias + "/?level=error\">Error</a></li>");
+            appendToContent("<li><a href=\"" + currentServletAlias + "/?level=warning\">Warning</a></li>");
+            appendToContent("<li><a href=\"" + currentServletAlias + "/?level=info\">Info</a></li>");
+            appendToContent("<li><a href=\"" + currentServletAlias + "/?level=debug\">Debug</a></li>");
 			appendToContent("<ul>");
 			appendToContent("</ul>");
 			appendToContent("</div>");
@@ -259,7 +253,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 				appendNoticeIfDebugLevel();
 				appendTableHeader();
 				while (this.logs.hasMoreElements()) {
-					LogEntry entry = this.logs.nextElement();
+					LogEntry entry = (LogEntry) this.logs.nextElement();
 					appendLogIfLogLevelHigher(entry);
 				}
 				appendTableFooter();
@@ -271,7 +265,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 
 		private void appendLogsHeader() {
 			String level = getStringOfLogLevel(this.logLevel);
-			appendToContent(String.format("<h2>Log (%s level)</h2>", level));
+			appendToContent("<h2>Log (" + level + " level)</h2>");
 		}
 
 		private void appendNoticeIfDebugLevel() {
@@ -314,10 +308,10 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 				exception = entry.getException().toString();
 			}
 			appendRowHeader();
-			appendToContent(String.format("<td>%s</td>", date));
-			appendToContent(String.format("<td>%s</td>", level));
-			appendToContent(String.format("<td>%s</td>", message));
-			appendToContent(String.format("<td>%s</td>", exception));
+			appendToContent("<td>" + date + "</td>");
+			appendToContent("<td>" + level + "</td>");
+			appendToContent("<td>" + message + "</td>");
+			appendToContent("<td>" + exception + "</td>");
 			appendToContent("</tr>");
 			swapRowColor();
 		}
@@ -374,7 +368,6 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		return (LogReaderService) this.logReaderServiceTracker.getService();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updated(Dictionary properties) throws ConfigurationException {
 		if (properties != null) {
 			updateAlias(properties);
@@ -383,7 +376,6 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateAlias(Dictionary properties) throws ConfigurationException {
 		String newServletAlias = (String) properties.get("alias");
 		setServletAlias(newServletAlias);
@@ -438,20 +430,17 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 	}
 
 	private void logInfoReistered() {
-		String logMessage = String.format("Logpage servlet '%s' was registered.",
-				this.currentServletAlias);
+		String logMessage = "Logpage servlet '" + this.currentServletAlias + "' was registered.";
 		logInfo(logMessage);
 	}
 
 	private void logInfoUnregistered() {
-		String logMessage = String.format("Logpage servlet '%s' was unregistered.",
-				this.currentServletAlias);
+		String logMessage = "Logpage servlet '" + this.currentServletAlias + "' was unregistered.";
 		logInfo(logMessage);
 	}
 
 	private void logInfoPropertiesUpdated() {
-		String logMessage = String.format("Properties of LogpageService updated. " + "{%s=%s}",
-				"alias", this.servletAlias);
+		String logMessage = "Properties of LogpageService updated. " + "{alias=" +  this.servletAlias + "}";
 		logInfo(logMessage);
 	}
 
@@ -476,9 +465,6 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		if (logService != null) {
 			logService.log(level, message);
 		}
-
-		String nameOfLevel = getStringOfLogLevel(level);
-		System.out.println(String.format("[%s] %s", nameOfLevel, message));
 	}
 
 	private void log(int level, String message, Exception e) {
@@ -486,10 +472,6 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		if (logService != null) {
 			logService.log(level, message, e);
 		}
-
-		String nameOfLevel = getStringOfLogLevel(level);
-		System.out.println(String.format("[%s] %s (%s: %s)", nameOfLevel, message, e.getClass()
-				.getName(), e.getMessage()));
 	}
 
 	private String getStringOfLogLevel(int level) {

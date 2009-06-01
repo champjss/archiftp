@@ -1,6 +1,5 @@
 package org.microx.archiftp.archive;
 
-@SuppressWarnings("serial")
 public class PermissionDeniedException extends Exception {
 	public PermissionDeniedException() {
 		super();

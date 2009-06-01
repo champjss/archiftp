@@ -45,8 +45,7 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 
 		if (login() == false) {
 			logErrorLoginFailed();
-			throw new IOException(String.format("Login to server with username '%s' failed.",
-					this.username));
+			throw new IOException("Login to server with username '" + this.username + "' failed.");
 		}
 
 		if (changeFileTypeToBinary() == false) {
@@ -56,9 +55,8 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		
 		if (upload(file) == false) {
 			logErrorUploadFailed(file);
-			throw new IOException(String.format(
-					"Uploading file failed. (Is directory '%s' exists and writeable?)",
-					this.directory));
+			throw new IOException(
+					"Uploading file failed. (Is directory '" + this.directory + "' exists and writeable?)");
 		}
 
 		disconnect();
@@ -90,7 +88,11 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 	}
 
 	private String getFilePathInServer(File file) {
-		return String.format("%s%s%s", this.directory, File.separator, file.getName());
+	    StringBuffer buff = new StringBuffer();
+	    buff.append(this.directory);
+	    buff.append(File.separator);
+	    buff.append(file.getName());
+	    return buff.toString();
 	}
 
 	private InputStream getFileStream(File file) throws FileNotFoundException {
@@ -106,7 +108,6 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		ftp.disconnect();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void updated(Dictionary properties) throws ConfigurationException {
 		if (properties != null) {
 			updatedHostname(properties);
@@ -118,17 +119,15 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updatedHostname(Dictionary properties) {
 		String newHostname = (String) properties.get("hostname");
 		setHostname(newHostname);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updatedPort(Dictionary properties) throws ConfigurationException {
 		int newPort;
 		try {
-			newPort = (Integer) properties.get("port");
+			newPort = ((Integer) properties.get("port")).intValue();
 		}
 		catch (ClassCastException e) {
 			throw new ConfigurationException("port",
@@ -148,19 +147,16 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		return (port > 0) && (port < 65536);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updatedUsername(Dictionary properties) {
 		String newUsername = (String) properties.get("username");
 		setUsername(newUsername);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updatedPassword(Dictionary properties) {
 		String newPassword = (String) properties.get("password");
 		setPassword(newPassword);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updatedDirectory(Dictionary properties) {
 		String newDirectory = (String) properties.get("directory");
 		setDirectory(newDirectory);
@@ -208,8 +204,7 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 
 	// Log
 	private void logErrorLoginFailed() {
-		logError(String.format("Login to '%s:%d' with username '%s' failed.", this.hostname,
-				this.port, this.username));
+	    logError("Login to '" + this.hostname + ":" + this.port + "' with username '"+ this.username + "' failed");
 	}
 	
 	private void logErrorChangeFileTypeFailed() {
@@ -217,21 +212,22 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 	}
 
 	private void logErrorUploadFailed(File file) {
-		logError(String.format("Uploading file '%s' to '%s:%d%s' failed.  " +
-				"(Is directory exists and writeable?)", file.getAbsolutePath(),
-				this.hostname, this.port, this.directory));
+		logError("Uploading file '" + file.getAbsolutePath() + "' to '" + this.hostname + 
+            ":" + this.port + this.directory + "' failed.  " +
+			"(Is directory exists and writeable?)");
 	}
 
 	private void logDebugUploadComplete(File file) {
-		logDebug(String.format("'%s' was uploaded to '%s:%d%s'", file.getAbsolutePath(),
-				this.hostname, this.port, this.directory));
+		logDebug("'" + file.getAbsolutePath() + "' was uploaded to '" + this.hostname + 
+		    ":" + this.port + this.directory + "'");
 	}
 
 	private void logInfoPropertiesUpdated() {
-		String logMessage = String.format("Properties of FtpService updated. "
-				+ "{%s=%s, %s=%d, %s=%s, %s=%s, %s=%s}", "hostname", this.hostname, "port",
-				this.port, "username", this.username, "password", "******", "directory",
-				this.directory);
+		String logMessage = "Properties of FtpService updated. " +
+		        "{hostname=" + this.hostname +
+		        ",port=" + this.port + 
+		        ",username=" + this.username +
+		        ",directory=" + this.directory + "}";
 		logInfo(logMessage);
 	}
 
@@ -254,7 +250,7 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 		}
 		else {
 			String nameOfLevel = getNameOfLevel(level);
-			System.out.println(String.format("[%s] %s", nameOfLevel, message));
+			System.out.println("[" + nameOfLevel + "] " +  message);
 		}
 	}
 

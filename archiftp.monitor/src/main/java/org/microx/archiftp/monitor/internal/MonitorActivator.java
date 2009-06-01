@@ -67,7 +67,6 @@ public final class MonitorActivator implements BundleActivator {
 		return new ServiceTracker(this.context, EventAdmin.class.getName(), null);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerMonitorService(Object MonitorService) {
 		if (MonitorService instanceof MonitorService) {
 			Dictionary properties = getMonitorServiceProperties();
@@ -75,7 +74,6 @@ public final class MonitorActivator implements BundleActivator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Dictionary getMonitorServiceProperties() {
 		ConfigurationAdmin configAdminService = getConfigurationAdminService();
 		Dictionary properties = new Properties();
@@ -99,7 +97,6 @@ public final class MonitorActivator implements BundleActivator {
 		return this.context.getServiceReference(ConfigurationAdmin.class.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void registerManagedService(Object managedService) {
 		if (managedService instanceof ManagedService) {
 			Dictionary properties = new Properties();
@@ -121,8 +118,8 @@ public final class MonitorActivator implements BundleActivator {
 			String nameOfLevel = getNameOfLevel(level);
 			String exceptionClass = e.getClass().getName();
 			String exceptionMessage = e.getMessage();
-			System.out.println(String.format("[%s] %s (%s, %s)", nameOfLevel, message,
-					exceptionClass, exceptionMessage));
+			System.out.println("[" + nameOfLevel + "] " + message);
+            e.printStackTrace();
 		}
 	}
 
