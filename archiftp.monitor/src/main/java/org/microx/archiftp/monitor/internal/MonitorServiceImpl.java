@@ -7,8 +7,6 @@ import java.lang.Thread.State;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.management.ServiceNotFoundException;
-
 import org.microx.archiftp.archive.ArchiveService;
 import org.microx.archiftp.archive.PermissionDeniedException;
 import org.microx.archiftp.ftp.FtpService;
@@ -421,5 +419,10 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 
 		return (LogService) this.logServiceTracker.getService();
 	}
-
+    
+    class ServiceNotFoundException extends Exception {
+        public ServiceNotFoundException(String msg) {
+            super(msg);
+        }
+    }
 }
