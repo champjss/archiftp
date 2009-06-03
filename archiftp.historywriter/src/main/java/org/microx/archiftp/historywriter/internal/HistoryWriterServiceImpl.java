@@ -157,9 +157,15 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 	}
 
 	private void logInfoPropertiesUpdated() {
-		String logMessage = "Properties of HistoryWriter updated. {history-path=" + this.historyFilePath + 
-		    ", seperate-file-by-date=" + this.seperateHistoryFileByDate + "}";
-		logInfo(logMessage);
+		StringBuffer logMessage = new StringBuffer();
+		logMessage.append("Properties of HistoryWriter updated. {history-path=");
+		logMessage.append(this.historyFilePath);
+		logMessage.append(", seperate-file-by-date=");
+		logMessage.append(this.seperateHistoryFileByDate);
+		logMessage.append(", history-path-suffix=");
+		logMessage.append(this.historyPathSuffix);
+		logMessage.append("}");
+		logInfo(logMessage.toString());
 	}
 
 	private void logError(String message, Exception e) {
