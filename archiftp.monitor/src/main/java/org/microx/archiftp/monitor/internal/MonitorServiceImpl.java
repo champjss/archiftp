@@ -163,7 +163,7 @@ public final class MonitorServiceImpl implements MonitorService, ManagedService 
 		}
 
 		private String getEventMessageForHistoryWriter(File file) {
-			return "' " + file.getAbsolutePath() + "' was uploaded.";
+			return "'" + file.getAbsolutePath() + "' was uploaded.";
 		}
 
 		private void doArchiveJob(File file) throws FileNotFoundException, ServiceNotFoundException {

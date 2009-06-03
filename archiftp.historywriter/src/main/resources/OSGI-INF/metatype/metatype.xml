@@ -3,6 +3,7 @@
 	<OCD id="org.microx.archiftp.historywriter" name="Archiftp (HistoryWritter)" description="History Writer Service of Archiftp">
 		<AD id="history-path" type="String" requied="true" default="./history" name="History file path" description="Path to history file."/>
 		<AD id="seperate-file-by-date" type="Boolean" default="false" name="Seperate history file by date" description="Seperate incoming history messages into files by date (Ex. history.20090520)"/>
+				<AD id="history-path-suffix" type="String" requied="true" default=".txt" name="History path suffix" description="Suffix of history file name (Ex. If suffix is set to '.txt', filename is like 'history.txt', or 'history.20090520.txt')"/>
 	</OCD>
 	<Designate pid="org.microx.archiftp.historywriter">
 		<Object ocdref="org.microx.archiftp.historywriter"/>
