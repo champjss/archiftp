@@ -90,7 +90,6 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 	private String getFilePathInServer(File file) {
 	    StringBuffer buff = new StringBuffer();
 	    buff.append(this.directory);
-	    buff.append(File.separator);
 	    buff.append(file.getName());
 	    return buff.toString();
 	}
@@ -200,6 +199,13 @@ public final class FtpServiceImpl implements FtpService, ManagedService {
 
 	public void setDirectory(String directory) {
 		this.directory = directory;
+		if (isLastCharEquals(this.directory, '/') == false) {
+			this.directory = this.directory + '/';
+		}
+	}
+	
+	private boolean isLastCharEquals(String string, char comparerChar) {
+		return string.charAt(string.length() - 1) == comparerChar;
 	}
 
 	// Log
