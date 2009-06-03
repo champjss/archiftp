@@ -78,7 +78,7 @@ public final class LogpageServiceImpl implements LogpageService, ManagedService 
 		if (service != null) {
 			this.servlet = new LogpageServlet();
 			this.currentServletAlias = this.servletAlias;
-			this.currentStyleAlias = this.currentStyleAlias + "/style";
+			this.currentStyleAlias = this.currentServletAlias + "/style";
 			this.currentImageAlias = this.currentServletAlias + "/images";
 			try {
 				service.registerResources(this.currentStyleAlias, "/style", null);
