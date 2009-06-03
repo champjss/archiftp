@@ -22,6 +22,7 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 	private ServiceTracker logServiceTracker;
 	private String historyFilePath = "history";
 	private boolean seperateHistoryFileByDate = false;
+	private String historyPathSuffix = ".txt";
 
 	private FileWriter historyFileWriter;
 	private Date currentDate;
@@ -51,18 +52,27 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 	}
 
 	private void setAndOpenHistoryFileWriter() throws IOException {
+		String fileName;
 		if (this.seperateHistoryFileByDate) {
-			String fileName = getFileNameAppendedWithDate();
-			this.historyFileWriter = new FileWriter(fileName, true);
+			fileName = getFileNameAppendedWithDateAndSuffix();
 		}
 		else {
-			this.historyFileWriter = new FileWriter(this.historyFilePath, true);
+			fileName = getFileNameAppendedWithSuffix();
 		}
+		this.historyFileWriter = new FileWriter(fileName, true);
 	}
 
-	private String getFileNameAppendedWithDate() {
+	private String getFileNameAppendedWithDateAndSuffix() {
 		String dateString = this.dateFormatForFileName.format(this.currentDate);
-		return this.historyFilePath + "." + dateString;
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(this.historyFilePath).append('.').append(dateString).append(this.historyPathSuffix);
+		return buffer.toString();
+	}
+	
+	private String getFileNameAppendedWithSuffix() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(this.historyFilePath).append(this.historyPathSuffix);
+		return buffer.toString();
 	}
 
 	private void writeHistory(Event event) throws IOException {
@@ -109,7 +119,11 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 			throw new ConfigurationException("seperate-file-by-date",
 					"seperate-file-by-date must be only 'true' or 'false'", e);
 		}
-
+	}
+	
+	private void updateHistoryFileSuffix(Dictionary properties) throws ConfigurationException {
+		String newFilePath = (String) properties.get("history-path-suffix");
+		setHistoryPathSuffix(newFilePath);
 	}
 
 	public String getHistoryFilePath() {
@@ -126,6 +140,14 @@ public final class HistoryWriterServiceImpl implements HistoryWriterService, Eve
 
 	public void setSeperateHistoryFileByDate(boolean seperateHistoryFileByDate) {
 		this.seperateHistoryFileByDate = seperateHistoryFileByDate;
+	}
+	
+	public String getHistoryPathSuffix() {
+		return historyPathSuffix;
+	}
+	
+	public void setHistoryPathSuffix(String historyPathSuffix) {
+		this.historyPathSuffix = historyPathSuffix;
 	}
 
 	private void logErrorIOException(Exception e) {
